@@ -45,6 +45,7 @@
 #include <cstdlib>
 #include <string.h>
 #include <cstdio>
+#include <iostream>
 #include <assert.h>
 #include <math.h>
 #include <float.h>
@@ -66,6 +67,11 @@ private:
 	int height;     // numero de pixels na direcao vertical da imagem   */
 	float *buf;     // vetor de dimensao dcs*width*height que armazena consecutivamente as componentes de cor de cada pixel a partir do canto inferior esquerdo da imagem. A posicao das componentes de cor do pixel (x,y) fica armazenada a partir da posicao: (y*width*dcs) + (x*dcs)
 
+	/*Fields of the original image*/
+	int originalDcs;
+	int originalWidth;
+	int originalHeight;
+	float *originalBuf;
 public:
 	Image();
 	virtual ~Image();
@@ -81,16 +87,16 @@ public:
 	 *	@param h Altura da imagem.
 	 *	@param dcs Dimensao do espaco de cor de cada pixel (1=luminancia ou 3=RGB).
 	 *
-	 *	@return Handle da imagem criada.
+	 *
 	 */
-	static Image  * imgCreate (int w, int h, int dcs);
+	void imgCreate(int w, int h, int dcs);
 
 	/**
 	 *	Destroi a imagem.
 	 *
 	 *	@param image imagem a ser destruida.
 	 */
-	static void    imgDestroy (Image*image);
+	void  imgDestroy ();
 
 	/**
 	 *	Cria uma nova nova copia imagem dada.
@@ -99,7 +105,7 @@ public:
 	 *
 	 *	@return Handle da imagem criada.
 	 */
-	static Image* imgCopy(Image* image);
+	Image* imgCopy();
 
 	/**
 	 *	Cria uma nova nova copia imagem dada em tons de cinza.
@@ -108,7 +114,7 @@ public:
 	 *
 	 *	@return Handle da imagem criada.
 	 */
-	static Image* imgGrey(Image* image);
+	void imgGrey();
 
 	/**
 	 *	Obtem a largura (width) de uma imagem.
@@ -116,7 +122,7 @@ public:
 	 *	@param image Handle para uma imagem.
 	 *	@return  a largura em pixels (width) da imagem.
 	 */
-	static int imgGetWidth(Image* image);
+	int imgGetWidth();
 
 	/**
 	 *	Obtem a altura (heigth) de uma imagem.
@@ -124,7 +130,7 @@ public:
 	 *	@param image Handle para uma imagem.
 	 *	@return  a altura em pixels (height) da imagem.
 	 */
-	static int imgGetHeight(Image* image);
+	int imgGetHeight();
 
 	/**
 	 *	Obtem a dimensao do espaco de cor de cada pixel (1=lminancia ou 3=RGB).
@@ -133,7 +139,7 @@ public:
 	 *	@return  dimensao do espaco de cor de cada pixel (1=lminancia ou 3=RGB) da imagem.
 	 */
 
-	static int imgGetDimColorSpace(Image* image);
+	int imgGetDimColorSpace();
 	/**
 	 *	Obtem as dimensoes de uma imagem.
 	 *
@@ -141,7 +147,7 @@ public:
 	 *	@param w [out]Retorna a largura da imagem.
 	 *	@param h [out]Retorna a altura da imagem.
 	 */
-	static float*  imgGetData(Image* image);
+	float*  imgGetData();
 
 	/**
 	 *	Ajusta o pixel de uma imagem com a cor especificada.
@@ -151,8 +157,8 @@ public:
 	 *	@param y Posicao y na imagem.
 	 *	@param color Cor do pixel(valor em float [0,1]).
 	 */
-	static void imgSetPixel3fv(Image* image, int x, int y, float*  color);
-	static void imgSetPixel3f(Image* image, int x, int y, float R, float G, float B);
+	void imgSetPixel3fv(int x, int y, float*  color);
+	void imgSetPixel3f(int x, int y, float R, float G, float B);
 
 	/**
 	 *	Ajusta o pixel de uma imagem com a cor especificada.
@@ -162,7 +168,7 @@ public:
 	 *	@param y Posicao y na imagem.
 	 *	@param color Cor do pixel (valor em unsigend char[0,255]).
 	 */
-	static void imgSetPixel3ubv(Image* image, int x, int y, unsigned char * color);
+	void imgSetPixel3ubv(int x, int y, unsigned char * color);
 
 	/**
 	 *	Obtem o pixel de uma imagem na posicao especificada.
@@ -172,8 +178,8 @@ public:
 	 *	@param y Posicao y na imagem.
 	 *	@param color [out] Pixel da posicao especificada(valor em float [0,1]).
 	 */
-	static int imgGetPixel3fv(Image* image, int x, int y, float* color);
-	static void imgGetPixel3f(Image* image, int x, int y, float* R, float* G, float* B);
+	int imgGetPixel3fv(int x, int y, float* color);
+	void imgGetPixel3f(int x, int y, float* R, float* G, float* B);
 
 	/**
 	 *	Obtem o pixel de uma imagem na posicao especificada.
@@ -183,7 +189,7 @@ public:
 	 *	@param y Posicao y na imagem.
 	 *	@param color [out] Pixel da posicao especificada (valor em unsigend char[0,255]).
 	 */
-	static void imgGetPixel3ubv(Image* image, int x, int y, unsigned char *color);
+	void imgGetPixel3ubv(int x, int y, unsigned char *color);
 
 
 	/**
@@ -194,7 +200,7 @@ public:
 	 *
 	 *	@return retorna 1 caso nao haja erros.
 	 */
-	static int imgWriteBMP(char *filename, Image* bmp);
+	int imgWriteBMP(char *filename);
 
 	/**
 	 *	Le a imagem a partir do arquivo especificado.
@@ -203,7 +209,7 @@ public:
 	 *
 	 *	@return imagem criada.
 	 */
-	static Image* imgReadBMP (char *filename);
+	void imgReadBMP (char *filename);
 
 
 	/**
@@ -215,7 +221,7 @@ public:
 	 *
 	 *	@return imagem criada.
 	 */
-	static Image* imgReadPFM(char *filename);
+	void imgReadPFM(char *filename);
 
 	/**
 	 *	Salva a imagem no arquivo especificado .
@@ -225,7 +231,7 @@ public:
 	 *
 	 *	@return retorna 1 caso nao haja erros.
 	 */
-	static int imgWritePFM(char *filename, Image* image);
+	int imgWritePFM(char *filename);
 
 
 	/**
@@ -235,7 +241,7 @@ public:
 	 *	@param w Nova largura da imagem.
 	 *	@param h Nova altura da imagem.
 	 */
-	static int imgCountColor(Image* image, float);
+	int imgCountColor(float f);
 
 	/**
 	 *	 Aplica o filtro de Mediana para eliminar o ruido sal e pimenta
@@ -244,7 +250,7 @@ public:
 	 *	@param image Handle para uma imagem a ser filtrada.
 	 *
 	 */
-	static void imgMedian(Image* image);
+	void imgMedian();
 
 
 	/**
@@ -255,31 +261,32 @@ public:
 	 *
 	 *   @return Handle para a image de luminosidade com dois tons 0 e 1 (B&W).
 	 **/
-	static Image* imgBinary(Image* img_cgrey);
+	void imgBinary();
 
-	static Image* imgResize(Image* img0, int w1, int h1);
+	void imgResize(int w1, int h1);
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//These functions were added by Hugo
 
-	static Image* imgEroded(Image* img);
-	static Image* imgDilated(Image* img);
-	static int count(Image* img);
-	static int count2(Image* img);
-	static void imgInvert(Image *img);
+	void imgEroded();
+	void imgDilated();
+	int count();
+	int count2();
+	void imgInvert();
+	void imgReset();
 
 private:
 	static int getuint(unsigned short *uint, FILE *input);
-	 static int putuint(unsigned short uint, FILE *output);
-	 static  int getlong(FILE *input, long int *longint);
-	 static  int putlong(FILE *output, long int longint);
-	 static int getword(FILE *input, unsigned short int *word);
-	 static int putword(FILE *output, unsigned short int word);
-	 static  int getdword(FILE *input, unsigned long int *dword);
-	 static int putdword(FILE *output, unsigned long int dword);
-	 static float luminance(float red, float green, float blue);
-	 static float apply(float c[9], float v[9]);
+	static int putuint(unsigned short uint, FILE *output);
+	static  int getlong(FILE *input, long int *longint);
+	static  int putlong(FILE *output, long int longint);
+	static int getword(FILE *input, unsigned short int *word);
+	static int putword(FILE *output, unsigned short int word);
+	static  int getdword(FILE *input, unsigned long int *dword);
+	static int putdword(FILE *output, unsigned long int dword);
+	static float luminance(float red, float green, float blue);
+	static float apply(float c[9], float v[9]);
 };
 
 #endif /* IMAGE_H_ */

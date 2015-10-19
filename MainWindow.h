@@ -46,6 +46,7 @@ private:
 	static int exit_cb(Ihandle* ih);
 	static int repaint_cb(Ihandle* ih);
 	static int resize_cb(Ihandle *self, int new_width, int new_height);
+	static int render_cb(Ihandle* ih);
 
 	/*Intern method that makes it easier to create a button*/
 	Ihandle* IupSButton(char const * image_file, char const * tip, Icallback callback);

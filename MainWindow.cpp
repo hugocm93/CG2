@@ -7,15 +7,11 @@
 
 #include "MainWindow.h"
 
-
 MainWindow::MainWindow() {
 
-	std::cout << "MainWindow was created" << std::endl;
-
-	Ihandle* canvas = IupGLCanvas(NULL);        /* create a canvas  */
-	IupSetfAttribute(canvas, IUP_RASTERSIZE, "%dx%d", 640, 480);  /* define the initial size in pixels */
-
-	/* bind callback actions with callback functions */
+	/*Create canvas, define the canvas size and bind callbacks*/
+	Ihandle* canvas = IupGLCanvas(NULL);
+	IupSetfAttribute(canvas, IUP_RASTERSIZE, "%dx%d", 640, 480);
 	IupSetCallback(canvas, IUP_ACTION, (Icallback)repaint_cb);
 	IupSetCallback(canvas, IUP_RESIZE_CB, (Icallback)resize_cb);
 	this->canvas = canvas;
@@ -26,44 +22,34 @@ MainWindow::MainWindow() {
 	IupSetAttribute(msg,"EXPAND","HORIZONTAL");
 	this->messageBar = msg;
 
-	std::cout << "3" << std::endl;
-
-
+	/*Create toolBar*/
 	Ihandle* toolbar;
-	Ihandle* load = IupSButton("img/file_open.bmp","load a scene",(Icallback) load_cb);
-	Ihandle* save = IupSButton("img/file_save.bmp", "save image in a BMP file", (Icallback)save_cb);
-	toolbar=IupHbox(load,save, NULL);
+	Ihandle* load = IupSButton("img/file_open.bmp","Load a scene",(Icallback) load_cb);
+	Ihandle* render = IupSButton("img/render.bmp","Render the scene",(Icallback) render_cb);
+	Ihandle* save = IupSButton("img/file_save.bmp", "Save rendered scene into a BMP file", (Icallback)save_cb);
+	toolbar=IupHbox(load,render,save, NULL);
 	this->toolBar = toolbar;
-	Ihandle * vBox = IupVbox(this->toolBar, this->canvas,this->messageBar, NULL);
-	std::cout << "4" << std::endl;
 
+	/*Insert componets into the vBox*/
+	Ihandle * vBox = IupVbox(this->toolBar, this->canvas,this->messageBar, NULL);
+
+	/*Create the dialog and set its attributes*/
 	Ihandle* dialog = IupDialog(vBox);
 	IupSetAttribute(dialog, "TITLE", "Ray Tracing");
-	IupSetAttribute(dialog, "CLOSE_CB", "exit_cb");
-	IupSetAttribute(dialog, "RESIZE", "NO");
-	IupSetFunction("exit_cb", (Icallback) exit_cb);
 	IupSetAttribute(dialog, "canvas", (const char *)canvas);
 	IupSetAttribute(dialog, "dialog", (const char *)dialog);
 	IupSetAttribute(dialog, "image", (const char *)image);
 	IupSetAttribute(dialog, "messageBar", (const char *)messageBar);
-
+	IupSetAttribute(dialog, "CLOSE_CB", "exit_cb");
+	IupSetFunction("exit_cb", (Icallback) exit_cb);
+	IupSetAttribute(dialog, "RESIZE", "NO");
 	this->dialog = dialog;
 
-	std::cout << "5" << std::endl;
-
-	IupMap(this->dialog);
-
+	/*Initialize image*/
 	this->image = NULL;
-
-	std::cout << "End MainWindow" << std::endl;
-
 }
 
 MainWindow::~MainWindow() {
-	delete dialog;
-	delete canvas;
-	delete toolBar;
-	delete messageBar;
 	delete image;
 }
 
@@ -90,15 +76,15 @@ int MainWindow::repaint_cb(Ihandle *self)
 
 	if (image!=NULL)
 	{
-		int h = Image::imgGetHeight(image);
-		int w = Image::imgGetWidth(image);
+		int h = image->imgGetHeight();
+		int w = image->imgGetWidth();
 
 		/* assing to each pixel of the canvas the color of the corresponding pixel in the image */
 		glBegin(GL_POINTS);
 		for (y=0;y<h;y++) {
 			for (x=0;x<w;x++) {
 				float r,g,b;
-				image->imgGetPixel3f(image,x,y,&r,&g,&b); /* gets the RGB value the pixel (x,y) */
+				image->imgGetPixel3f(x,y,&r,&g,&b); /* gets the RGB value the pixel (x,y) */
 				glColor3f(r,g,b);        /* define a current color in OpenGL */
 				glVertex2i(x,y);         /* paint the pixel */
 			}
@@ -130,33 +116,25 @@ int MainWindow::resize_cb(Ihandle *self, int new_width, int new_height)
 	glLoadIdentity();
 	gluOrtho2D (0.0, (GLsizei)(new_width), 0.0, (GLsizei)(new_height));  /* window of interest [0,w]x[0,h] */
 
-	std::cout << "11" << std::endl;
-
-	Ihandle* canvas = (Ihandle*)IupGetAttribute(self, (const char*) "canvas");
-
-
-	std::cout << "22" << std::endl;
-
 	/* update canvas size and repaint */
-
+	Ihandle* canvas = (Ihandle*)IupGetAttribute(self, (const char*) "canvas");
 	repaint_cb(canvas);
-
-	std::cout << "33" << std::endl;
 
 	return IUP_DEFAULT; /* return to the IUP main loop */
 }
 
 int MainWindow::save_cb(Ihandle *ih)
 {
+	/*Update message bar*/
 	Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");
-	IupSetfAttribute(msg, "TITLE", "Save call back");
+	IupSetfAttribute(msg, "TITLE", "Save callback");
 
+	/*Open save dialog*/
 	Ihandle* getfile = IupFileDlg();
 	char* filename = NULL;
-	IupSetAttribute(getfile, IUP_TITLE, "Save File"  );
+	IupSetAttribute(getfile, IUP_TITLE, "Save a rendered scene"  );
 	IupSetAttribute(getfile, IUP_DIALOGTYPE, IUP_SAVE);
-	IupSetAttribute(getfile, IUP_FILTER, "*rt5");
-	IupSetAttribute(getfile, IUP_FILTERINFO, "Save a scene" );
+	IupSetAttribute(getfile, IUP_FILTER, "*bmp");
 	IupPopup(getfile, IUP_CENTER, IUP_CENTER);
 	filename = IupGetAttribute(getfile, IUP_VALUE);
 
@@ -165,24 +143,25 @@ int MainWindow::save_cb(Ihandle *ih)
 		return IUP_DEFAULT;
 	}
 
+	/*Save the image*/
 	Image* image = (Image*)IupGetAttribute(ih, (const char*)"image");
-	image->imgWriteBMP(filename, image);
+	image->imgWriteBMP(filename);
 
-	IupSetfAttribute(msg, "TITLE", "Count call back");
 	return IUP_DEFAULT;
 }
 
 int MainWindow::load_cb(Ihandle* ih)
 {
+	/*Update message bar*/
 	Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");
-	IupSetfAttribute(msg, "TITLE", "Save call back");
+	IupSetfAttribute(msg, "TITLE", "Load callback");
 
+	/*Open load file dialog*/
 	Ihandle* getfile = IupFileDlg();
 	char* filename = NULL;
 	IupSetAttribute(getfile, IUP_TITLE, "Load a scene"  );
 	IupSetAttribute(getfile, IUP_DIALOGTYPE, IUP_OPEN);
-	IupSetAttribute(getfile, IUP_FILTER, "*bmp");
-	IupSetAttribute(getfile, IUP_FILTERINFO, "Load a scene" );
+	IupSetAttribute(getfile, IUP_FILTER, "*rt5");
 	IupPopup(getfile, IUP_CENTER, IUP_CENTER);
 	filename = IupGetAttribute(getfile, IUP_VALUE);
 
@@ -191,36 +170,16 @@ int MainWindow::load_cb(Ihandle* ih)
 		return IUP_DEFAULT;
 	}
 
-	Image* image = (Image*)IupGetAttribute(ih, (const char*)"image");
+	//read file
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 
-	Ihandle* canvas = (Ihandle*)IupGetAttribute(ih, (const char*)"canvas");
-
-	Ihandle* dialog = (Ihandle*)IupGetAttribute(ih, (const char*)"dialog");
-
-
-	if (image!=NULL) image->imgDestroy(image);
-
-	std::cout << "111"<< std::endl;
-	image=image->imgReadBMP(filename);  /* loads the image */
-	if (image!=NULL) {
-		std::cout << "222"<< std::endl;
-		int width = image->imgGetWidth(image);
-		int height = image->imgGetHeight(image);
-
-		std::cout << "333"<< std::endl;
-		char buffer[64];
-		sprintf(buffer,"%dx%d",width,height);
-		IupStoreAttribute(canvas, IUP_RASTERSIZE, buffer);
-		IupSetAttribute(dialog, IUP_RASTERSIZE, NULL);
-		IupShowXY(dialog, IUP_CENTER, IUP_CENTER);
-
-		IupSetAttribute(dialog, "image", (const char*)image);
-
-		repaint_cb(canvas);
-		IupSetfAttribute(msg, "TITLE", "%s", filename);
-	} else
-		IupSetfAttribute(msg, "TITLE", "Can't open %s", filename);
-
+	IupSetfAttribute(msg, "TITLE", "Scene loaded. Click the render button.");
 
 	return IUP_DEFAULT;
 }
@@ -229,6 +188,22 @@ int MainWindow::exit_cb(Ihandle* ih)
 {
 	printf("Function to free memory and do finalizations...\n");
 	return IUP_CLOSE;
+}
+
+int MainWindow::render_cb(Ihandle* ih)
+{
+	//Do rendering here
+	//
+	//
+	//
+	//
+	//
+
+	/*Update message bar*/
+	Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");
+	IupSetfAttribute(msg, "TITLE", "Scene rendered");
+
+	return IUP_DEFAULT;
 }
 
 void MainWindow::show(){

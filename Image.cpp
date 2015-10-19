@@ -44,224 +44,54 @@ Image::Image() {
 	this->height = 0;     /* numero de pixels na direcao vertical da imagem   */
 	this->buf = NULL;
 
+	this->originalDcs = 0;
+	this->originalWidth = 0;
+	this->originalHeight = 0;
+	this->originalBuf = NULL;
 }
 
 Image::~Image() {
-	// TODO Auto-generated destructor stub
+	delete [] buf;
+	delete [] originalBuf;
 }
 
-/************************************************************************/
-/* Definicao das Funcoes Privadas                                       */
-/************************************************************************/
-
-/*  getuint e putuint:
- * Funcoes auxiliares para ler e escrever inteiros na ordem (lo-hi)
- * Note  que  no Windows as variaveis tipo "unsigned short int" sao
- * armazenadas  no disco em dois bytes na ordem inversa. Ou seja, o
- * numero  400, por exemplo, que  pode ser escrito como 0x190, fica
- * armazenado  em dois bytes consecutivos 0x90 e 0x01. Nos sistemas
- * UNIX e Mac este mesmo inteiro seria armazenado  na  ordem 0x01 e
- * 0x90. O armazenamento do Windows e' chamado  de  "little endian"
- * (i.e., lowest-order byte stored first), e  no  sitemas  Unix sao
- * "big-endian" (i.e., highest-order byte stored first).
- */
-
-/***************************************************************************
- * Reads an unsigned integer from input                                     *
- ***************************************************************************/
-int Image::getuint(unsigned short *uint, FILE *input)
+void Image::imgCreate(int w, int h, int dcs)
 {
-	int got;
-	unsigned char temp[2];
-	unsigned short tempuint;
+	this->width  = w;
+	this->height = h;
+	this->dcs = dcs;
+	this->buf = (float*)calloc (w * h * dcs , sizeof(float));
 
-	got = (int) fread(&temp, 1, 2, input);
-	if (got != 2) return 0;
+	this->originalWidth  = w;
+	this->originalHeight = h;
+	this->originalDcs = dcs;
+	this->originalBuf = (float*)calloc (w * h * dcs , sizeof(float));
 
-	tempuint = ((unsigned short)(temp[1])<<8) | ((unsigned short)(temp[0]));
-
-	*uint = tempuint;
-
-	return 1;
 }
 
-/***************************************************************************
- * Writes an unsigned integer in output                                     *
- ***************************************************************************/
-int Image::putuint(unsigned short uint, FILE *output)
+void Image::imgDestroy()
 {
-	int put;
-	unsigned char temp[2];
-
-	temp[0] = uint & 0xff;
-	temp[1] = (uint >> 8) & 0xff;
-
-	put = (int) fwrite(&temp, 1, 2, output);
-	if (put != 2) return 0;
-
-	return 1;
-}
-
-/***************************************************************************
- * Reads a long integer from input                                          *
- ***************************************************************************/
-int Image::getlong(FILE *input, long int *longint)
-{
-	int got;
-	unsigned char temp[4];
-	long int templongint;
-
-	got = (int)fread(&temp, 1, 4, input);
-	if (got != 4) return 0;
-
-	templongint = ((long int)(temp[3])<<24) | ((long int)(temp[2])<<16)
-    																																																																																																																																																  | ((long int)(temp[1])<<8) | ((long int)(temp[0]));
-
-	*longint = templongint;
-
-	return 1;
-}
-
-/***************************************************************************
- * Writes a long integer in output                                          *
- ***************************************************************************/
-int Image::putlong(FILE *output, long int longint)
-{
-	int put;
-	unsigned char temp[4];
-
-	temp[0] = (unsigned char)longint & 0xff;
-	temp[1] = (unsigned char)(longint >> 8) & 0xff;
-	temp[2] = (unsigned char)(longint >> 16) & 0xff;
-	temp[3] = (unsigned char)(longint >> 24) & 0xff;
-
-	put = (int)fwrite(&temp, 1, 4, output);
-
-	if (put != 4) return 0;
-
-	return 1;
-}
-
-/***************************************************************************
- * Reads a word from input                                                  *
- ***************************************************************************/
-int Image::getword(FILE *input, unsigned short int *word)
-{
-	int got;
-	unsigned char temp[2];
-	unsigned short int tempword;
-
-	got = (int)fread(&temp, 1, 2, input);
-	if (got != 2) return 0;
-
-	tempword = ((unsigned short int)(temp[1])<<8) | ((unsigned short int)(temp[0]));
-
-	*word = tempword;
-
-	return 1;
-}
-
-/***************************************************************************
- * Writes a word in output                                                  *
- ***************************************************************************/
-int Image::putword(FILE *output, unsigned short int word)
-{
-	int put;
-	unsigned char temp[2];
-
-	temp[0] = word & 0xff;
-	temp[1] = (word >> 8) & 0xff;
-
-	put = (int)fwrite(&temp, 1, 2, output);
-	if (put != 2) return 0;
-
-	return 1;
-}
-
-/***************************************************************************
- * Reads a double word from input                                           *
- ***************************************************************************/
-int Image::getdword(FILE *input, unsigned long int *dword)
-{
-	int got;
-	unsigned char temp[4];
-	unsigned long int tempdword;
-
-	got = (int)fread(&temp, 1, 4, input);
-	if (got != 4) return 0;
-
-	tempdword = ((unsigned long int)(temp[3])<<24) | ((unsigned long int)(temp[2])<<16)
-    																																																																																																																																																  | ((unsigned long int)(temp[1])<<8) | ((unsigned long int)(temp[0]));
-
-	*dword = tempdword;
-
-	return 1;
-}
-
-/***************************************************************************
- * Writes a double word in output                                           *
- ***************************************************************************/
-int Image::putdword(FILE *output, unsigned long int dword)
-{
-	int put;
-	unsigned char temp[4];
-
-	temp[0] = (unsigned char) (dword & 0xff);
-	temp[1] = (unsigned char) ((dword >>  8) & 0xff);
-	temp[2] = (unsigned char) ((dword >> 16) & 0xff);
-	temp[3] = (unsigned char) ((dword >> 24) & 0xff);
-
-	put = (int)fwrite(&temp, 1, 4, output);
-
-	if (put != 4) return 0;
-
-	return 1;
-}
-
-float Image::luminance(float red, float green, float blue)
-{
-	return 0.2126f*red +0.7152f*green+0.0722f*blue;
-}
-
-
-/************************************************************************/
-/* Definicao das Funcoes Exportadas                                     */
-/************************************************************************/
-
-Image* Image::imgCreate(int w, int h, int dcs)
-{
-	Image* image = (Image*) malloc (sizeof(Image));
-	assert(image);
-	image->width  = w;
-	image->height = h;
-	image->dcs = dcs;
-	image->buf = (float*)calloc (w * h * dcs , sizeof(float));
-	assert(image->buf);
-	return image;
-}
-
-void Image::imgDestroy(Image* image)
-{
-	if (image)
+	if (this)
 	{
-		if (image->buf) free (image->buf);
-		free(image);
+		if (this->buf) free (this->buf);
+		if (this->originalBuf) free (this->originalBuf);
 	}
 }
 
-Image* Image::imgCopy(Image* image)
+Image* Image::imgCopy()
 {
-	int w = imgGetWidth(image);
-	int h = imgGetHeight(image);
-	int dcs = imgGetDimColorSpace(image);
-	Image* img1=imgCreate(w,h,dcs);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
+	int dcs = this->imgGetDimColorSpace();
+	Image* img1 = new Image();
+	img1->imgCreate(w,h,dcs);
 	int x,y;
 	float rgb[3];
 
 	for (y=0;y<h;y++){
 		for (x=0;x<w;x++) {
-			imgGetPixel3fv(image,x,y,rgb);
-			imgSetPixel3fv(img1,x,y,rgb);
+			this->imgGetPixel3fv(x,y,rgb);
+			img1->imgSetPixel3fv(x,y,rgb);
 		}
 	}
 
@@ -269,29 +99,35 @@ Image* Image::imgCopy(Image* image)
 }
 
 
-
-Image* Image::imgGrey(Image* image)
+void Image::imgGrey()
 {
-	int w = imgGetWidth(image);
-	int h = imgGetHeight(image);
-	Image* img1=imgCreate(w,h,1);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
+	Image* img1 = new Image();
+	img1->imgCreate(w,h,1);
 	int x,y;
 	float cor[3];
 
 	for (y=0;y<h;y++){
 		for (x=0;x<w;x++) {
-			imgGetPixel3fv(image,x,y,cor);
-			imgSetPixel3fv(img1, x, y, cor);  /* por img1 so ter um canal a funcao coloca a luminancia*/
+			this->imgGetPixel3fv(x,y,cor);
+			img1->imgSetPixel3fv(x, y, cor);  /* por img1 so ter um canal a funcao coloca a luminancia*/
 		}
 	}
-	return img1;
+
+	this->dcs = img1->dcs;
+	this->width = img1->width;
+	this->height = img1->height;
+	this->buf = img1->buf;
+
 }
 
-Image* Image::imgResize(Image* img0, int w1, int h1)
+void Image::imgResize(int w1, int h1)
 {
-	Image* img1 = imgCreate(w1,h1,img0->dcs);
-	float w0 = (float) img0->width;  /* passa para float para fazer contas */
-	float h0 = (float) img0->height;
+	Image* img1 = new Image();
+	img1->imgCreate(w1,h1,this->dcs);
+	float w0 = (float) this->width;  /* passa para float para fazer contas */
+	float h0 = (float) this->height;
 
 	int x0,y0,x1,y1;
 	float color[3];
@@ -301,78 +137,77 @@ Image* Image::imgResize(Image* img0, int w1, int h1)
 		{
 			x0=ROUND(w0*x1/w1);   /* pega a cor do pixel mais proxima */
 			y0=ROUND(h0*y1/h1);
-			imgGetPixel3fv(img0,x0,y0,color);
-			imgGetPixel3fv(img1,x1,y1,color);
+			this->imgGetPixel3fv(x0,y0,color);
+			img1->imgGetPixel3fv(x1,y1,color);
 		}
-	return img1;
 }
 
 
-int Image::imgGetWidth(Image* image)
+int Image::imgGetWidth()
 {
-	return image->width;
+	return this->width;
 }
 
-int Image::imgGetHeight(Image* image)
+int Image::imgGetHeight()
 {
-	return image->height;
+	return this->height;
 }
 
-int Image::imgGetDimColorSpace(Image* image)
+int Image::imgGetDimColorSpace()
 {
-	return image->dcs;
+	return this->dcs;
 }
 
-float* Image::imgGetData(Image* image)
+float* Image::imgGetData()
 {
-	return image->buf;
+	return this->buf;
 }
 
-void Image::imgSetPixel3fv(Image* image, int x, int y, float*  color)
+void Image::imgSetPixel3fv(int x, int y, float*  color)
 {
-	int pos = (y*image->width*image->dcs) + (x*image->dcs);
-	switch (image->dcs) {
+	int pos = (y*this->width*this->dcs) + (x*this->dcs);
+	switch (this->dcs) {
 	case 3:
-		image->buf[pos  ] = color[0];
-		image->buf[pos+1] = color[1];
-		image->buf[pos+2] = color[2];
+		this->buf[pos  ] = color[0];
+		this->buf[pos+1] = color[1];
+		this->buf[pos+2] = color[2];
 		break;
 	case 1:
-		image->buf[pos  ] = luminance(color[0],color[1],color[2]);
+		this->buf[pos  ] = luminance(color[0],color[1],color[2]);
 		break;
 	default:
 		break;
 	}
 }
 
-void Image::imgSetPixel3f(Image* image, int x, int y, float R, float G, float B)
+void Image::imgSetPixel3f(int x, int y, float R, float G, float B)
 {
-	int pos = (y*image->width*image->dcs) + (x*image->dcs);
-	switch (image->dcs) {
+	int pos = (y*this->width*this->dcs) + (x*this->dcs);
+	switch (this->dcs) {
 	case 3:
-		image->buf[pos  ] = R;
-		image->buf[pos+1] = G;
-		image->buf[pos+2] = B;
+		this->buf[pos  ] = R;
+		this->buf[pos+1] = G;
+		this->buf[pos+2] = B;
 		break;
 	case 1:
-		image->buf[pos  ] = luminance(R,G,B);
+		this->buf[pos  ] = luminance(R,G,B);
 		break;
 	default:
 		break;
 	}
 }
 
-int Image::imgGetPixel3fv(Image* image, int x, int y, float* color)
+int Image::imgGetPixel3fv(int x, int y, float* color)
 {
-	int pos = (y*image->width*image->dcs) + (x*image->dcs);
-	switch (image->dcs) {
+	int pos = (y*this->width*this->dcs) + (x*this->dcs);
+	switch (this->dcs) {
 	case 3:
-		color[0] = image->buf[pos  ];
-		color[1] = image->buf[pos+1];
-		color[2] = image->buf[pos+2];
+		color[0] = this->buf[pos  ];
+		color[1] = this->buf[pos+1];
+		color[2] = this->buf[pos+2];
 		break;
 	case 1:
-		color[0] = image->buf[pos  ];
+		color[0] = this->buf[pos  ];
 		color[1] = color[0];
 		color[2] = color[0];
 		break;
@@ -384,17 +219,17 @@ int Image::imgGetPixel3fv(Image* image, int x, int y, float* color)
 }
 
 
-void Image::imgGetPixel3f(Image* image, int x, int y, float* R, float* G, float* B)
+void Image::imgGetPixel3f(int x, int y, float* R, float* G, float* B)
 {
-	int pos = (y*image->width*image->dcs) + (x*image->dcs);
-	switch (image->dcs) {
+	int pos = (y*this->width*this->dcs) + (x*this->dcs);
+	switch (this->dcs) {
 	case 3:
-		*R = image->buf[pos  ];
-		*G = image->buf[pos+1];
-		*B = image->buf[pos+2];
+		*R = this->buf[pos  ];
+		*G = this->buf[pos+1];
+		*B = this->buf[pos+2];
 		break;
 	case 1:
-		*R = image->buf[pos  ];
+		*R = this->buf[pos  ];
 		*G = *R;
 		*B = *R;
 		break;
@@ -403,38 +238,38 @@ void Image::imgGetPixel3f(Image* image, int x, int y, float* R, float* G, float*
 	}
 }
 
-void Image::imgSetPixel3ubv(Image* image, int x, int y, unsigned char * color)
+void Image::imgSetPixel3ubv(int x, int y, unsigned char * color)
 {
-	int pos = (y*image->width*image->dcs) + (x*image->dcs);
-	switch (image->dcs) {
+	int pos = (y*this->width*this->dcs) + (x*this->dcs);
+	switch (this->dcs) {
 	case 3:
-		image->buf[pos  ] = (float)(color[0]/255.);
-		image->buf[pos+1] = (float)(color[1]/255.);
-		image->buf[pos+2] = (float)(color[2]/255.);
+		this->buf[pos  ] = (float)(color[0]/255.);
+		this->buf[pos+1] = (float)(color[1]/255.);
+		this->buf[pos+2] = (float)(color[2]/255.);
 		break;
 	case 1:
-		image->buf[pos  ] = luminance((float)(color[0]/255.),(float)(color[1]/255.),(float)(color[2]/255.));
+		this->buf[pos  ] = luminance((float)(color[0]/255.),(float)(color[1]/255.),(float)(color[2]/255.));
 		break;
 	default:
 		break;
 	}
 }
 
-void Image::imgGetPixel3ubv(Image* image, int x, int y, unsigned char *color)
+void Image::imgGetPixel3ubv(int x, int y, unsigned char *color)
 {
-	int pos = (y*image->width*image->dcs) + (x*image->dcs);
+	int pos = (y*this->width*this->dcs) + (x*this->dcs);
 	int r,g,b;
-	switch (image->dcs) {
+	switch (this->dcs) {
 	case 3:
-		r= ROUND(255*image->buf[pos]);
-		g= ROUND (255*image->buf[pos+1]);
-		b= ROUND (255*image->buf[pos+2]);
+		r= ROUND(255*this->buf[pos]);
+		g= ROUND (255*this->buf[pos+1]);
+		b= ROUND (255*this->buf[pos+2]);
 		color[0] = (unsigned char)(r<256) ? r : 255 ;
 		color[1] = (unsigned char)(g<256) ? g : 255 ;
 		color[2] = (unsigned char)(b<256) ? b : 255 ;
 		break;
 	case 1:
-		r=g=b= ROUND(255*image->buf[pos]);
+		r=g=b= ROUND(255*this->buf[pos]);
 		color[0] = (unsigned char)(r<256) ? r : 255 ;
 		color[1] = (unsigned char)(g<256) ? g : 255 ;
 		color[2] = (unsigned char)(b<256) ? b : 255 ;
@@ -453,10 +288,10 @@ typedef long int LONG;
 typedef unsigned long int DWORD;
 
 
-Image* Image::imgReadBMP(char *filename)
+void Image::imgReadBMP(char *filename)
 {
 	FILE  *filePtr;            /* ponteiro do arquivo */
-	Image*image;            /* imagem a ser criada */
+
 	BYTE *linedata;
 
 	USHORT  bfType;             /* "BM" = 19788           */
@@ -509,7 +344,7 @@ Image* Image::imgReadBMP(char *filename)
 	{
 		fprintf(stderr, "imgReadBMP: Not a bitmap 24 bits file.\n");
 		fclose(filePtr);
-		return (NULL);
+		return ;
 	}
 
 	/* pula os demais bytes do infoheader */
@@ -521,10 +356,10 @@ Image* Image::imgReadBMP(char *filename)
 	getdword(filePtr, &dwordSkip);
 	getdword(filePtr, &dwordSkip);
 
-	image = imgCreate(biWidth, biHeight,3);
+	this->imgCreate(biWidth, biHeight,3);
 
 	/* a linha deve terminar em uma fronteira de dword */
-	linesize = 3*image->width;
+	linesize = 3*this->width;
 	if (linesize & 3) {
 		linesize |= 3;
 		linesize++;
@@ -534,30 +369,35 @@ Image* Image::imgReadBMP(char *filename)
 	linedata = (BYTE *) malloc(linesize);
 	if (linedata == NULL) {
 		fprintf(stderr, "get24bits: Not enough memory.\n");
-		return 0;
+		return ;
 	}
 
 	/* pega as componentes de cada pixel */
-	for (k=0, i=0; i<image->height; i++) {
+	for (k=0, i=0; i<this->height; i++) {
 		got = (unsigned long int)fread(linedata, linesize, 1, filePtr);
 		if (got != 1) {
 			free(linedata);
 			fprintf(stderr, "get24bits: Unexpected end of file.\n");
 		}
-		for (l=1, j=0; j<image->width; j++, l=l+3) {
-			image->buf[k++] = (float)(linedata[l+1]/255.);
-			image->buf[k++] = (float)(linedata[l  ]/255.);
-			image->buf[k++] = (float)(linedata[l-1]/255.);
+		for (l=1, j=0; j<this->width; j++, l=l+3) {
+			this->buf[k++] = (float)(linedata[l+1]/255.);
+			this->buf[k++] = (float)(linedata[l  ]/255.);
+			this->buf[k++] = (float)(linedata[l-1]/255.);
 		}
+	}
+
+	for(int i = 0; i < this->dcs*this->width*this->height; i++){
+		this->originalBuf[i] = this->buf[i];
 	}
 
 	free(linedata);
 	fclose(filePtr);
 
-	return image;
+	std::cout << "asdasa"<< std::endl;
+
 }
 
-int Image::imgWriteBMP(char *filename, Image* bmp)
+int Image::imgWriteBMP(char *filename)
 {
 	FILE          *filePtr;         /* ponteiro do arquivo */
 	unsigned char *filedata;
@@ -566,14 +406,12 @@ int Image::imgWriteBMP(char *filename, Image* bmp)
 
 	int linesize, put;
 
-	if (!bmp) return 0;
-
 	/* cria um novo arquivo binario */
 	filePtr = fopen(filename, "wb");
 	assert(filePtr);
 
 	/* a linha deve terminar em uma double word boundary */
-	linesize = bmp->width * 3;
+	linesize = this->width * 3;
 	if (linesize & 3) {
 		linesize |= 3;
 		linesize ++;
@@ -582,7 +420,7 @@ int Image::imgWriteBMP(char *filename, Image* bmp)
 	/* calcula o tamanho do arquivo em bytes */
 	bfSize = 14 +                     /* file header size */
 			40 +                     /* info header size */
-			bmp->height * linesize;       /* image data  size */
+			this->height * linesize;       /* image data  size */
 
 	/* Preenche o cabe�alho -> FileHeader e InfoHeader */
 	putuint(19778, filePtr);              /* type = "BM" = 19788                             */
@@ -592,8 +430,8 @@ int Image::imgWriteBMP(char *filename, Image* bmp)
 	putdword(filePtr, 54);                /* bfOffBits -> offset in bits to data             */
 
 	putdword(filePtr, 40);                /* biSize -> structure size in bytes                 */
-	putlong(filePtr, bmp->width);         /* biWidth -> image width in pixels                  */
-	putlong(filePtr, bmp->height);        /* biHeight -> image height in pixels                */
+	putlong(filePtr, this->width);         /* biWidth -> image width in pixels                  */
+	putlong(filePtr, this->height);        /* biHeight -> image height in pixels                */
 	putword(filePtr, 1);                  /* biPlanes, must be 1                               */
 	putword(filePtr, 24);                 /* biBitCount, 24 para 24 bits -> bitmap color depth */
 	putdword(filePtr, 0);                 /* biCompression, compression type -> no compression */
@@ -608,17 +446,17 @@ int Image::imgWriteBMP(char *filename, Image* bmp)
 	assert(filedata);
 
 	/* a linha deve ser zero padded */
-	for (i=0; i<(linesize-(3*bmp->width)); i++)
+	for (i=0; i<(linesize-(3*this->width)); i++)
 		filedata[linesize-1-i] = 0;
 
-	for (k=0; k<bmp->height;k++)
+	for (k=0; k<this->height;k++)
 	{
 		l = 1;
 		/* coloca as componentes BGR no buffer */
-		for (i=0; i<bmp->width; i++) {
+		for (i=0; i<this->width; i++) {
 			unsigned char color[3];
 			int r,g,b;
-			imgGetPixel3ubv(bmp,i,k,color);
+			this->imgGetPixel3ubv(i,k,color);
 			r= color[0];
 			g= color[1];
 			b= color[2];
@@ -647,7 +485,7 @@ int Image::imgWriteBMP(char *filename, Image* bmp)
 
 /*- PFM Interface Functions  ---------------------------------------*/
 
-Image* Image::imgReadPFM(char *filename)
+void Image::imgReadPFM(char *filename)
 {
 	FILE *fp;
 	Image* img;
@@ -657,13 +495,13 @@ Image* Image::imgReadPFM(char *filename)
 	char line[256];
 
 	fp = fopen(filename, "rb");
-	if (fp == NULL) {  printf("%s nao pode ser aberto\n",filename); return NULL;}
+	if (fp == NULL) {  printf("%s nao pode ser aberto\n",filename); return ;}
 
 	fgets(line,256,fp);
 
 	if(strcmp(line,"PF\n"))
 	{
-		return 0;
+		return ;
 	}
 
 	while (fscanf( fp, " %d ", &w ) != 1)
@@ -675,17 +513,32 @@ Image* Image::imgReadPFM(char *filename)
 
 	fgetc(fp);
 
-	img = imgCreate(w,h,3);
+	img->imgCreate(w,h,3);
 	fread( img->buf, 3*w*h, sizeof(float), fp );
 
 	fprintf(stdout,"imgReadPFM: %s successfuly loaded\n",filename);
 	fclose(fp);
-	return img;
+
+	this->dcs = img->dcs;        /* define a dim do espaco de cor (dimension of the color space): 3=RGB, 1=luminancia */
+	this->width = img->width;      /* numero de pixels na direcao horizontal da imagem */
+	this->height = img->height;     /* numero de pixels na direcao vertical da imagem   */
+	this->buf = img->buf;
+
+	this->originalDcs = img->originalDcs;
+	this->originalWidth = img->originalWidth;
+	this->originalHeight = img->originalHeight;
+	this->originalBuf = (float*)calloc (img->width * img->height * img->dcs , sizeof(float));
+
+	for(int i = 0; i < this->dcs*this->width*this->height; i++){
+		this->originalBuf[i] = this->buf[i];
+	}
+
+	this->originalBuf = img->originalBuf;
 }
 
 
 
-int Image::imgWritePFM(char * filename, Image* img)
+int Image::imgWritePFM(char * filename)
 {
 	FILE * fp;
 	float  scale=1.f;
@@ -696,9 +549,9 @@ int Image::imgWritePFM(char * filename, Image* img)
 	}
 
 	/* the ppm file header */
-	fprintf(fp,"PF\n%d %d\n%f\n", img->width, img->height, scale);
+	fprintf(fp,"PF\n%d %d\n%f\n", this->width, this->height, scale);
 
-	fwrite( img->buf, 3*img->width*img->height, sizeof(float), fp );
+	fwrite( this->buf, 3*this->width*this->height, sizeof(float), fp );
 
 	fprintf(stdout,"imgWritePFM: %s successfuly created\n",filename);
 	fclose(fp);
@@ -741,13 +594,13 @@ int comparaCor1(const void * p1, const void * p2)
 	return 0;
 }
 
-int Image::imgCountColor(Image * img, float tol)
+int Image::imgCountColor(float tol)
 {
 	int numCor = 1;
-	int w = imgGetWidth(img);
-	int h = imgGetHeight(img);
-	int dcs = imgGetDimColorSpace(img);
-	float* buf=imgGetData(img);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
+	int dcs = this->imgGetDimColorSpace();
+	float* buf=this->imgGetData();
 	int *vet=(int*) malloc(3*w*h*sizeof(int));
 	int i;
 
@@ -831,15 +684,15 @@ pixelvalue opt_med9(pixelvalue * p)
 #undef PIX_SWAP
 
 
-void Image::imgMedian(Image* image)
+void Image::imgMedian()
 {
-	int w = imgGetWidth(image);
-	int h = imgGetHeight(image);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
 
-	int dcs = imgGetDimColorSpace(image);
-	Image* img = imgCopy(image);
-	float* image_buf = imgGetData(image);
-	float* img_buf = imgGetData(img);
+	int dcs = this->imgGetDimColorSpace();
+	Image* img = this->imgCopy();
+	float* image_buf = this->imgGetData();
+	float* img_buf = this->imgGetData();
 	int x,y;
 
 	if (dcs==1) {
@@ -873,14 +726,13 @@ void Image::imgMedian(Image* image)
 			}
 		}
 	}
-	imgDestroy(img);
+	img->imgDestroy();
 }
 
-Image* Image::imgBinary( Image* greyImage )
+void Image::imgBinary()
 {
-	int w = imgGetWidth(greyImage);
-	int h = imgGetHeight(greyImage);
-	Image* imgFinal = imgCreate(w,h,1);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
 	float  white[3] = { 1, 1, 1 };
 	float  black[3] = { 0, 0, 0 };
 	float  cor[3];
@@ -888,25 +740,24 @@ Image* Image::imgBinary( Image* greyImage )
 
 	for (y = 0; y < h; y++)	{
 		for (x = 0; x < w; x++) {
-			imgGetPixel3fv(greyImage, x, y, cor);
+			this->imgGetPixel3fv( x, y, cor);
 			if (cor[0] >= 0.5f)
-				imgSetPixel3fv(imgFinal, x, y, white);
+				this->imgSetPixel3fv( x, y, white);
 			else
-				imgSetPixel3fv(imgFinal, x, y, black);
+				this->imgSetPixel3fv(x, y, black);
 		}
 	}
-	return imgFinal;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //The following functions were added by Hugo
 
-Image* Image::imgDilated( Image* image)
+void Image::imgDilated()
 {
 	printf("Dilatation\n");
-	int w = imgGetWidth(image);
-	int h = imgGetHeight(image);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
 	Image* temp = NULL;
 	float  white[3] = { 1, 1, 1 };
 	float  cor[3];
@@ -920,21 +771,21 @@ Image* Image::imgDilated( Image* image)
 		}
 	}
 
-	temp = imgCopy(image);
+	temp = this->imgCopy();
 
 	for (y = 1; y < h-1; y++)	{
 		for (x = 1; x < w-1; x++) {
 
-			imgGetPixel3fv(image, x, y, corCenter);
+			this->imgGetPixel3fv(x, y, corCenter);
 			if(corCenter[0] == WHITE){
 				continue;
 			}
 
 			for(i=0;i<3;i++){
 				for(j=0;j<3;j++){
-					imgGetPixel3fv(image, x+i-1, y+j-1, cor);
+					this->imgGetPixel3fv(x+i-1, y+j-1, cor);
 					if(structuringElement[i][j] == 1 && cor[0] == WHITE){
-						imgSetPixel3fv(temp, x, y, white);
+						temp->imgSetPixel3fv(x, y, white);
 						i = 3;
 						j = 3;
 					}
@@ -942,15 +793,14 @@ Image* Image::imgDilated( Image* image)
 			}
 		}
 	}
-	return temp;
 }
 
-Image* Image::imgEroded( Image* image)
+void Image::imgEroded()
 {
 	printf("Erosion\n");
 
-	int w = imgGetWidth(image);
-	int h = imgGetHeight(image);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
 	Image* temp = NULL;
 	float  black[3] = { 0, 0, 0 };
 	float  cor[3];
@@ -964,21 +814,21 @@ Image* Image::imgEroded( Image* image)
 		}
 	}
 
-	temp = imgCopy(image);
+	temp = this->imgCopy();
 
 	for (y = 1; y < h-1; y++)	{
 		for (x = 1; x < w-1; x++) {
 
-			imgGetPixel3fv(image, x, y, corCenter);
+			this->imgGetPixel3fv(x, y, corCenter);
 			if(corCenter[0] == BLACK){
 				continue;
 			}
 
 			for(i=0;i<3;i++){
 				for(j=0;j<3;j++){
-					imgGetPixel3fv(image, x+i-1, y+j-1, cor);
+					this->imgGetPixel3fv(x+i-1, y+j-1, cor);
 					if(structuringElement[i][j] == 1 && cor[0] == BLACK){
-						imgSetPixel3fv(temp, x, y, black);
+						temp->imgSetPixel3fv(x, y, black);
 						i = 3;
 						j = 3;
 					}
@@ -986,17 +836,15 @@ Image* Image::imgEroded( Image* image)
 			}
 		}
 	}
-
-	return temp;
 }
 
-int Image::count(Image *image){
+int Image::count(){
 
 	//do processing
 
 	//count
-	int w = imgGetWidth(image);
-	int h = imgGetHeight(image);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
 	int i, j, x, y ;
 	int n;
 	int *label = (int *)malloc(h * w * sizeof(int));
@@ -1022,26 +870,26 @@ int Image::count(Image *image){
 	for (y = 1; y < h-1; y++)	{
 		for (x = 1; x < w-1; x++) {
 
-			imgGetPixel3fv(image, x, y, cor);
+			this->imgGetPixel3fv(x, y, cor);
 			if(cor[0] == BLACK){
 				continue;
 			}
 
 			n =  (x-1) * h + (y);
 			labels[0] = label[n];
-			imgGetPixel3fv(image, x-1, y, aux1);
+			this->imgGetPixel3fv(x-1, y, aux1);
 
 			n =  (x-1) * h + (y-1);
 			labels[1] = label[n];
-			imgGetPixel3fv(image, x-1, y-1, aux2);
+			this->imgGetPixel3fv(x-1, y-1, aux2);
 
 			n =  (x) * h + (y-1);
 			labels[2] = label[n];
-			imgGetPixel3fv(image, x, y-1, aux3);
+			this->imgGetPixel3fv(x, y-1, aux3);
 
 			n =  (x+1) * h + (y-1);
 			labels[3] = label[n];
-			imgGetPixel3fv(image, x+1, y-1, aux4);
+			this->imgGetPixel3fv(x+1, y-1, aux4);
 
 			if(aux1[0] == BLACK && aux2[0] == BLACK && aux3[0] == BLACK && aux4[0] == BLACK){
 				n =  (x) * h + (y);
@@ -1081,7 +929,7 @@ int Image::count(Image *image){
 	for (x = 1; x < w-1; x++) {
 		for (y = 1; y < h-1; y++)	{
 
-			imgGetPixel3fv(image, x, y, cor);
+			this->imgGetPixel3fv(x, y, cor);
 			if(cor[0] == WHITE){
 
 				int auxLabel = 0;
@@ -1091,7 +939,7 @@ int Image::count(Image *image){
 				for(j=0;j<3;j++){
 					for(i=0;i<3;i++){
 
-						imgGetPixel3fv(image, x+i-1, y+j-1, aux1);
+						this->imgGetPixel3fv(x+i-1, y+j-1, aux1);
 						if(aux1[0] == WHITE){
 							n =  (x+i-1) * h + (y+j-1);
 							label[n] = auxLabel;
@@ -1106,7 +954,7 @@ int Image::count(Image *image){
 	//count connected components
 	for (y = 0; y < h; y++)	{
 		for (x = 0; x < w; x++) {
-			imgGetPixel3fv(image, x, y, cor);
+			this->imgGetPixel3fv(x, y, cor);
 			if(cor[0] == BLACK){
 				continue;
 			}
@@ -1143,19 +991,19 @@ int Image::count(Image *image){
 	return index;
 }
 
-int Image::count2(Image *image){
+int Image::count2(void){
 	int max = 0;
 	int current = 2;
-	image = imgGrey(image);
-	image = imgBinary(image);
+	this->imgGrey();
+	this->imgBinary();
 
 	while(current>1){
-		image = imgEroded(image);
-		imgMedian(image);
-		imgMedian(image);
-		imgMedian(image);
-		imgMedian(image);
-		current = count(image);
+		this->imgEroded();
+		this->imgMedian();
+		this->imgMedian();
+		this->imgMedian();
+		this->imgMedian();
+		current = this->count();
 		if(current>max){
 			max = current;
 		}
@@ -1163,10 +1011,10 @@ int Image::count2(Image *image){
 	return max;
 }
 
-void Image::imgInvert( Image* image)
+void Image::imgInvert()
 {
-	int w = imgGetWidth(image);
-	int h = imgGetHeight(image);
+	int w = this->imgGetWidth();
+	int h = this->imgGetHeight();
 	float  white[3] = { 1, 1, 1 };
 	float  black[3] = { 0, 0, 0 };
 	float  cor[3];
@@ -1174,14 +1022,199 @@ void Image::imgInvert( Image* image)
 
 	for (y = 0; y < h; y++)	{
 		for (x = 0; x < w; x++) {
-			imgGetPixel3fv(image, x, y, cor);
+			this->imgGetPixel3fv(x, y, cor);
 			if (cor[0] == WHITE)
-				imgSetPixel3fv(image, x, y, black);
+				this->imgSetPixel3fv(x, y, black);
 			else
-				imgSetPixel3fv(image, x, y, white);
+				this->imgSetPixel3fv(x, y, white);
 		}
 	}
 
+}
+
+void Image::imgReset(){
+	this->dcs = this->originalDcs;
+	this->width = this->originalWidth;
+	this->height = this->originalHeight;
+	this->buf = this->originalBuf;
+
+	int n = this->dcs*this->width*this->height;
+	this->originalBuf = (float*)calloc (n , sizeof(float));
+
+}
+
+
+/************************************************************************/
+/* Definicao das Funcoes Privadas                                       */
+/************************************************************************/
+
+/*  getuint e putuint:
+ * Funcoes auxiliares para ler e escrever inteiros na ordem (lo-hi)
+ * Note  que  no Windows as variaveis tipo "unsigned short int" sao
+ * armazenadas  no disco em dois bytes na ordem inversa. Ou seja, o
+ * numero  400, por exemplo, que  pode ser escrito como 0x190, fica
+ * armazenado  em dois bytes consecutivos 0x90 e 0x01. Nos sistemas
+ * UNIX e Mac este mesmo inteiro seria armazenado  na  ordem 0x01 e
+ * 0x90. O armazenamento do Windows e' chamado  de  "little endian"
+ * (i.e., lowest-order byte stored first), e  no  sitemas  Unix sao
+ * "big-endian" (i.e., highest-order byte stored first).
+ */
+
+/***************************************************************************
+ * Reads an unsigned integer from input                                     *
+ ***************************************************************************/
+int Image::getuint(unsigned short *uint, FILE *input)
+{
+	int got;
+	unsigned char temp[2];
+	unsigned short tempuint;
+
+	got = (int) fread(&temp, 1, 2, input);
+	if (got != 2) return 0;
+
+	tempuint = ((unsigned short)(temp[1])<<8) | ((unsigned short)(temp[0]));
+
+	*uint = tempuint;
+
+	return 1;
+}
+
+/***************************************************************************
+ * Writes an unsigned integer in output                                     *
+ ***************************************************************************/
+int Image::putuint(unsigned short uint, FILE *output)
+{
+	int put;
+	unsigned char temp[2];
+
+	temp[0] = uint & 0xff;
+	temp[1] = (uint >> 8) & 0xff;
+
+	put = (int) fwrite(&temp, 1, 2, output);
+	if (put != 2) return 0;
+
+	return 1;
+}
+
+/***************************************************************************
+ * Reads a long integer from input                                          *
+ ***************************************************************************/
+int Image::getlong(FILE *input, long int *longint)
+{
+	int got;
+	unsigned char temp[4];
+	long int templongint;
+
+	got = (int)fread(&temp, 1, 4, input);
+	if (got != 4) return 0;
+
+	templongint = ((long int)(temp[3])<<24) | ((long int)(temp[2])<<16)
+    																																																																																																																																																														  | ((long int)(temp[1])<<8) | ((long int)(temp[0]));
+
+	*longint = templongint;
+
+	return 1;
+}
+
+/***************************************************************************
+ * Writes a long integer in output                                          *
+ ***************************************************************************/
+int Image::putlong(FILE *output, long int longint)
+{
+	int put;
+	unsigned char temp[4];
+
+	temp[0] = (unsigned char)longint & 0xff;
+	temp[1] = (unsigned char)(longint >> 8) & 0xff;
+	temp[2] = (unsigned char)(longint >> 16) & 0xff;
+	temp[3] = (unsigned char)(longint >> 24) & 0xff;
+
+	put = (int)fwrite(&temp, 1, 4, output);
+
+	if (put != 4) return 0;
+
+	return 1;
+}
+
+/***************************************************************************
+ * Reads a word from input                                                  *
+ ***************************************************************************/
+int Image::getword(FILE *input, unsigned short int *word)
+{
+	int got;
+	unsigned char temp[2];
+	unsigned short int tempword;
+
+	got = (int)fread(&temp, 1, 2, input);
+	if (got != 2) return 0;
+
+	tempword = ((unsigned short int)(temp[1])<<8) | ((unsigned short int)(temp[0]));
+
+	*word = tempword;
+
+	return 1;
+}
+
+/***************************************************************************
+ * Writes a word in output                                                  *
+ ***************************************************************************/
+int Image::putword(FILE *output, unsigned short int word)
+{
+	int put;
+	unsigned char temp[2];
+
+	temp[0] = word & 0xff;
+	temp[1] = (word >> 8) & 0xff;
+
+	put = (int)fwrite(&temp, 1, 2, output);
+	if (put != 2) return 0;
+
+	return 1;
+}
+
+/***************************************************************************
+ * Reads a double word from input                                           *
+ ***************************************************************************/
+int Image::getdword(FILE *input, unsigned long int *dword)
+{
+	int got;
+	unsigned char temp[4];
+	unsigned long int tempdword;
+
+	got = (int)fread(&temp, 1, 4, input);
+	if (got != 4) return 0;
+
+	tempdword = ((unsigned long int)(temp[3])<<24) | ((unsigned long int)(temp[2])<<16)
+    																																																																																																																																																														  | ((unsigned long int)(temp[1])<<8) | ((unsigned long int)(temp[0]));
+
+	*dword = tempdword;
+
+	return 1;
+}
+
+/***************************************************************************
+ * Writes a double word in output                                           *
+ ***************************************************************************/
+int Image::putdword(FILE *output, unsigned long int dword)
+{
+	int put;
+	unsigned char temp[4];
+
+	temp[0] = (unsigned char) (dword & 0xff);
+	temp[1] = (unsigned char) ((dword >>  8) & 0xff);
+	temp[2] = (unsigned char) ((dword >> 16) & 0xff);
+	temp[3] = (unsigned char) ((dword >> 24) & 0xff);
+
+	put = (int)fwrite(&temp, 1, 4, output);
+
+	if (put != 4) return 0;
+
+	return 1;
+}
+
+float Image::luminance(float red, float green, float blue)
+{
+	return 0.2126f*red +0.7152f*green+0.0722f*blue;
 }
 
 
