@@ -8,7 +8,66 @@
 #include "MainWindow.h"
 
 
-Ihandle* IupSButton(char* image_file, char* tip, Icallback callback)
+MainWindow::MainWindow() {
+
+	std::cout << "MainWindow was created" << std::endl;
+
+	Ihandle* canvas = IupGLCanvas(NULL);        /* create a canvas  */
+	IupSetfAttribute(canvas, IUP_RASTERSIZE, "%dx%d", 640, 480);  /* define the initial size in pixels */
+
+	/* bind callback actions with callback functions */
+	IupSetCallback(canvas, IUP_ACTION, (Icallback)repaint_cb);
+	IupSetCallback(canvas, IUP_RESIZE_CB, (Icallback)resize_cb);
+	this->canvas = canvas;
+
+	/*Create message bar at the bottom of the window*/
+	Ihandle* msg = IupLabel("Message...");       /* label as a msg bar */
+	IupSetfAttribute(msg,IUP_RASTERSIZE,"x%d",20);     /* define height in pixels */
+	IupSetAttribute(msg,"EXPAND","HORIZONTAL");
+	this->messageBar = msg;
+
+	std::cout << "3" << std::endl;
+
+
+	Ihandle* toolbar;
+	Ihandle* load = IupSButton("img/file_open.bmp","load a scene",(Icallback) load_cb);
+	Ihandle* save = IupSButton("img/file_save.bmp", "save image in a BMP file", (Icallback)save_cb);
+	toolbar=IupHbox(load,save, NULL);
+	this->toolBar = toolbar;
+	Ihandle * vBox = IupVbox(this->toolBar, this->canvas,this->messageBar, NULL);
+	std::cout << "4" << std::endl;
+
+	Ihandle* dialog = IupDialog(vBox);
+	IupSetAttribute(dialog, "TITLE", "Ray Tracing");
+	IupSetAttribute(dialog, "CLOSE_CB", "exit_cb");
+	IupSetAttribute(dialog, "RESIZE", "NO");
+	IupSetFunction("exit_cb", (Icallback) exit_cb);
+	IupSetAttribute(dialog, "canvas", (const char *)canvas);
+	IupSetAttribute(dialog, "dialog", (const char *)dialog);
+	IupSetAttribute(dialog, "image", (const char *)image);
+	IupSetAttribute(dialog, "messageBar", (const char *)messageBar);
+
+	this->dialog = dialog;
+
+	std::cout << "5" << std::endl;
+
+	IupMap(this->dialog);
+
+	this->image = NULL;
+
+	std::cout << "End MainWindow" << std::endl;
+
+}
+
+MainWindow::~MainWindow() {
+	delete dialog;
+	delete canvas;
+	delete toolBar;
+	delete messageBar;
+	delete image;
+}
+
+Ihandle* MainWindow::IupSButton(char const * image_file, char const * tip, Icallback callback)
 {
 	Ihandle* button = IupButton(NULL, NULL);
 	IupSetAttribute(button, "IMAGE", image_file);
@@ -18,7 +77,7 @@ Ihandle* IupSButton(char* image_file, char* tip, Icallback callback)
 	return button;
 }
 
-int repaint_cb(Ihandle *self)
+int MainWindow::repaint_cb(Ihandle *self)
 {
 	std::cout << "repaint" << std::endl;
 
@@ -31,8 +90,9 @@ int repaint_cb(Ihandle *self)
 
 	if (image!=NULL)
 	{
-		int h = image->imgGetHeight(image);
-		int w = image->imgGetWidth(image);
+		int h = Image::imgGetHeight(image);
+		int w = Image::imgGetWidth(image);
+
 		/* assing to each pixel of the canvas the color of the corresponding pixel in the image */
 		glBegin(GL_POINTS);
 		for (y=0;y<h;y++) {
@@ -52,7 +112,7 @@ int repaint_cb(Ihandle *self)
 
 
 /* function called in the event of changes in the width or in the height of the canvas */
-int resize_cb(Ihandle *self, int new_width, int new_height)
+int MainWindow::resize_cb(Ihandle *self, int new_width, int new_height)
 {
 	std::cout << "resize" << std::endl;
 
@@ -73,18 +133,12 @@ int resize_cb(Ihandle *self, int new_width, int new_height)
 	std::cout << "11" << std::endl;
 
 	Ihandle* canvas = (Ihandle*)IupGetAttribute(self, (const char*) "canvas");
-	int* width = (int*)IupGetAttribute(self, (const char*) "width");
-	int* height = (int*)IupGetAttribute(self, (const char*) "height");
+
 
 	std::cout << "22" << std::endl;
 
 	/* update canvas size and repaint */
-	int aux1 = (int)malloc(sizeof(int));
-	int aux2 = (int)malloc(sizeof(int));
-	aux1=new_width;
-	aux2=new_height;
-	width=&aux1;
-	height=&aux2;
+
 	repaint_cb(canvas);
 
 	std::cout << "33" << std::endl;
@@ -92,7 +146,7 @@ int resize_cb(Ihandle *self, int new_width, int new_height)
 	return IUP_DEFAULT; /* return to the IUP main loop */
 }
 
-int save_cb(Ihandle *ih)
+int MainWindow::save_cb(Ihandle *ih)
 {
 	Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");
 	IupSetfAttribute(msg, "TITLE", "Save call back");
@@ -118,7 +172,7 @@ int save_cb(Ihandle *ih)
 	return IUP_DEFAULT;
 }
 
-int load_cb(Ihandle* ih)
+int MainWindow::load_cb(Ihandle* ih)
 {
 	Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");
 	IupSetfAttribute(msg, "TITLE", "Save call back");
@@ -171,73 +225,19 @@ int load_cb(Ihandle* ih)
 	return IUP_DEFAULT;
 }
 
-int exit_cb(Ihandle* ih)
+int MainWindow::exit_cb(Ihandle* ih)
 {
 	printf("Function to free memory and do finalizations...\n");
 	return IUP_CLOSE;
 }
 
-
-MainWindow::MainWindow() {
-
-	std::cout << "Begin MainWindow" << std::endl;
-
-	Ihandle* canvas = IupGLCanvas(NULL);        /* create a canvas  */
-	IupSetfAttribute(canvas, IUP_RASTERSIZE, "%dx%d", 640, 480);  /* define the initial size in pixels */
-	IupSetAttribute(canvas,IUP_BUFFER,IUP_DOUBLE);      /* define that this OpenGL _canvas has double buffer (front and back) */
-
-	std::cout << 1 << std::endl;
-
-	/* bind callback actions with callback functions */
-	IupSetCallback(canvas, IUP_ACTION, (Icallback)repaint_cb);
-	IupSetCallback(canvas, IUP_RESIZE_CB, (Icallback)resize_cb);
-	this->canvas = canvas;
-
-	std::cout << "2" << std::endl;
-
-	Ihandle* msg = IupLabel("Message...");       /* label as a msg bar */
-	IupSetfAttribute(msg,IUP_RASTERSIZE,"x%d",20);     /* define height in pixels */
-	IupSetAttribute(msg,"EXPAND","HORIZONTAL");
-	this->messageBar = msg;
-
-	std::cout << "3" << std::endl;
-
-	Ihandle* toolbar;
-	Ihandle* load = IupSButton("img/file_open.bmp","load a scene",(Icallback) load_cb);
-	Ihandle* save = IupSButton("img/file_save.bmp", "save image in a BMP file", (Icallback)save_cb);
-	toolbar=IupHbox(load,save, NULL);
-	this->toolBar = toolbar;
-	Ihandle * vBox = IupVbox(this->toolBar, this->canvas,this->messageBar, NULL);
-	std::cout << "4" << std::endl;
-
-	Ihandle* dialog = IupDialog(vBox);
-	IupSetAttribute(dialog, "TITLE", "Ray Tracing");
-	IupSetAttribute(dialog, "CLOSE_CB", "exit_cb");
-	IupSetAttribute(dialog, "RESIZE", "NO");
-	IupSetFunction("exit_cb", (Icallback) exit_cb);
-	IupSetAttribute(dialog, "canvas", (const char *)canvas);
-	IupSetAttribute(dialog, "dialog", (const char *)dialog);
-	IupSetAttribute(dialog, "width", (const char *)widthh);
-	IupSetAttribute(dialog, "height", (const char *)heightt);
-	IupSetAttribute(dialog, "image", (const char *)image);
-	IupSetAttribute(dialog, "messageBar", (const char *)messageBar);
-
-	this->dialog = dialog;
-
-	std::cout << "5" << std::endl;
-
-	IupMap(this->dialog);
-
-	std::cout << "End MainWindow" << std::endl;
-
-}
-
-MainWindow::~MainWindow() {
-	// TODO Auto-generated destructor stub
-}
-
 void MainWindow::show(){
 	IupShowXY(this->dialog, IUP_CENTER, IUP_CENTER);
+
+}
+
+void MainWindow::hide(){
+	IupHide(this->dialog);
 
 }
 

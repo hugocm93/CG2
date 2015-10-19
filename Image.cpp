@@ -39,7 +39,10 @@
 #include "Image.h"
 
 Image::Image() {
-	// TODO Auto-generated constructor stub
+	this->dcs = 0;        /* define a dim do espaco de cor (dimension of the color space): 3=RGB, 1=luminancia */
+	this->width = 0;      /* numero de pixels na direcao horizontal da imagem */
+	this->height = 0;     /* numero de pixels na direcao vertical da imagem   */
+	this->buf = NULL;
 
 }
 
@@ -66,7 +69,7 @@ Image::~Image() {
 /***************************************************************************
  * Reads an unsigned integer from input                                     *
  ***************************************************************************/
- int Image::getuint(unsigned short *uint, FILE *input)
+int Image::getuint(unsigned short *uint, FILE *input)
 {
 	int got;
 	unsigned char temp[2];
@@ -85,7 +88,7 @@ Image::~Image() {
 /***************************************************************************
  * Writes an unsigned integer in output                                     *
  ***************************************************************************/
- int Image::putuint(unsigned short uint, FILE *output)
+int Image::putuint(unsigned short uint, FILE *output)
 {
 	int put;
 	unsigned char temp[2];
@@ -102,7 +105,7 @@ Image::~Image() {
 /***************************************************************************
  * Reads a long integer from input                                          *
  ***************************************************************************/
- int Image::getlong(FILE *input, long int *longint)
+int Image::getlong(FILE *input, long int *longint)
 {
 	int got;
 	unsigned char temp[4];
@@ -112,7 +115,7 @@ Image::~Image() {
 	if (got != 4) return 0;
 
 	templongint = ((long int)(temp[3])<<24) | ((long int)(temp[2])<<16)
-    																																																																																																																																														  | ((long int)(temp[1])<<8) | ((long int)(temp[0]));
+    																																																																																																																																																  | ((long int)(temp[1])<<8) | ((long int)(temp[0]));
 
 	*longint = templongint;
 
@@ -122,7 +125,7 @@ Image::~Image() {
 /***************************************************************************
  * Writes a long integer in output                                          *
  ***************************************************************************/
- int Image::putlong(FILE *output, long int longint)
+int Image::putlong(FILE *output, long int longint)
 {
 	int put;
 	unsigned char temp[4];
@@ -142,7 +145,7 @@ Image::~Image() {
 /***************************************************************************
  * Reads a word from input                                                  *
  ***************************************************************************/
- int Image::getword(FILE *input, unsigned short int *word)
+int Image::getword(FILE *input, unsigned short int *word)
 {
 	int got;
 	unsigned char temp[2];
@@ -161,7 +164,7 @@ Image::~Image() {
 /***************************************************************************
  * Writes a word in output                                                  *
  ***************************************************************************/
- int Image::putword(FILE *output, unsigned short int word)
+int Image::putword(FILE *output, unsigned short int word)
 {
 	int put;
 	unsigned char temp[2];
@@ -178,7 +181,7 @@ Image::~Image() {
 /***************************************************************************
  * Reads a double word from input                                           *
  ***************************************************************************/
- int Image::getdword(FILE *input, unsigned long int *dword)
+int Image::getdword(FILE *input, unsigned long int *dword)
 {
 	int got;
 	unsigned char temp[4];
@@ -188,7 +191,7 @@ Image::~Image() {
 	if (got != 4) return 0;
 
 	tempdword = ((unsigned long int)(temp[3])<<24) | ((unsigned long int)(temp[2])<<16)
-    																																																																																																																																														  | ((unsigned long int)(temp[1])<<8) | ((unsigned long int)(temp[0]));
+    																																																																																																																																																  | ((unsigned long int)(temp[1])<<8) | ((unsigned long int)(temp[0]));
 
 	*dword = tempdword;
 
@@ -198,7 +201,7 @@ Image::~Image() {
 /***************************************************************************
  * Writes a double word in output                                           *
  ***************************************************************************/
- int Image::putdword(FILE *output, unsigned long int dword)
+int Image::putdword(FILE *output, unsigned long int dword)
 {
 	int put;
 	unsigned char temp[4];
@@ -215,7 +218,7 @@ Image::~Image() {
 	return 1;
 }
 
- float Image::luminance(float red, float green, float blue)
+float Image::luminance(float red, float green, float blue)
 {
 	return 0.2126f*red +0.7152f*green+0.0722f*blue;
 }
@@ -702,7 +705,7 @@ int Image::imgWritePFM(char * filename, Image* img)
 	return 1;
 }
 
- int comparaCor3(const void * p1, const void * p2)
+int comparaCor3(const void * p1, const void * p2)
 {
 	int *c1 = (int *) p1;  /* aponta para o vermelho quantizado da cor 1 */
 	int *c2 = (int *) p2;  /* aponta para o vermelho quantizado da cor 2 */
@@ -725,7 +728,7 @@ int Image::imgWritePFM(char * filename, Image* img)
 	return 0;
 }
 
- int comparaCor1(const void * p1, const void * p2)
+int comparaCor1(const void * p1, const void * p2)
 {
 	int *c1 = (int *) p1;  /* aponta para a luminosidade quantizada da cor 1 */
 	int *c2 = (int *) p2;  /* aponta para a luminosidade quantizada da cor 2 */
@@ -783,7 +786,7 @@ int Image::imgCountColor(Image * img, float tol)
 	return numCor;
 }
 
- float Image::apply(float c[9], float v[9])
+float Image::apply(float c[9], float v[9])
 {
 	return c[0]*v[0]+c[1]*v[1]+c[2]*v[2]+c[3]*v[3]+c[4]*v[4]+c[5]*v[5]+c[6]*v[6]+c[7]*v[7]+c[8]*v[8];
 }
@@ -812,7 +815,7 @@ The result array is guaranteed to contain the median
 value
 in middle position, but other elements are NOT sorted.
 ---------------------------------------------------------------------------*/
- pixelvalue opt_med9(pixelvalue * p)
+pixelvalue opt_med9(pixelvalue * p)
 {
 	PIX_SORT(p[1], p[2]) ; PIX_SORT(p[4], p[5]) ; PIX_SORT(p[7], p[8]) ;
 	PIX_SORT(p[0], p[1]) ; PIX_SORT(p[3], p[4]) ; PIX_SORT(p[6], p[7]) ;
@@ -832,6 +835,7 @@ void Image::imgMedian(Image* image)
 {
 	int w = imgGetWidth(image);
 	int h = imgGetHeight(image);
+
 	int dcs = imgGetDimColorSpace(image);
 	Image* img = imgCopy(image);
 	float* image_buf = imgGetData(image);
@@ -1126,14 +1130,14 @@ int Image::count(Image *image){
 	}
 
 	//print
-//	for (y = 0; y < h; y++)	{
-//		printf("\n");
-//		for (x = 0; x < w; x++) {
-//			n =  (x)* h  + (y);
-//			printf("%d ", label[n]);
-//
-//		}
-//	}
+	//	for (y = 0; y < h; y++)	{
+	//		printf("\n");
+	//		for (x = 0; x < w; x++) {
+	//			n =  (x)* h  + (y);
+	//			printf("%d ", label[n]);
+	//
+	//		}
+	//	}
 
 	free(label);
 	return index;

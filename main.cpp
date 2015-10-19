@@ -8,7 +8,6 @@
 #include "MainWindow.h"
 
 int main(int argc, char* argv[]){
-	std::cout << "Main" << std::endl;
 
 	IupOpen(&argc, &argv);
 

@@ -17,11 +17,8 @@
 #include "Image.h"
 
 class MainWindow {
-public:
-	MainWindow();
-	virtual ~MainWindow();
-	void show();
 
+	///////////////////////////////Fields of the class
 
 private:
 	Ihandle* dialog;
@@ -29,8 +26,30 @@ private:
 	Ihandle* toolBar;
 	Ihandle* messageBar;
 	Image* image;
-	int* widthh;
-	int* heightt;
+
+	//////////////////////////////Methods of the class
+
+public:
+	MainWindow();
+	virtual ~MainWindow();
+
+	/*Shows the dialog*/
+	void show();
+
+	/*Hides the dialog*/
+	void hide();
+
+private:
+	/* Callbacks*/
+	static int load_cb(Ihandle* ih);
+	static int save_cb(Ihandle* ih);
+	static int exit_cb(Ihandle* ih);
+	static int repaint_cb(Ihandle* ih);
+	static int resize_cb(Ihandle *self, int new_width, int new_height);
+
+	/*Intern method that makes it easier to create a button*/
+	Ihandle* IupSButton(char const * image_file, char const * tip, Icallback callback);
+
 };
 
 #endif /* MAINWINDOW_H_ */
