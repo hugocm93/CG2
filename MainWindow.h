@@ -49,7 +49,8 @@ private:
 	static int render_cb(Ihandle* ih);
 
 	/*Intern method that makes it easier to create a button*/
-	Ihandle* IupSButton(char const * image_file, char const * tip, Icallback callback);
+	static Ihandle* IupSButton(char const * image_file, char const * tip, Icallback callback);
+	static void IupCanvasResize( Ihandle* canvas, Ihandle* parent_dialog, int new_width, int new_height );
 
 };
 

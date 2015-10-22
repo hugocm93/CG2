@@ -4,38 +4,32 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Camera.cpp \
-../ColorRGB.cpp \
-../Image.cpp \
-../MainWindow.cpp \
-../Object.cpp \
-../Ray.cpp \
-../Scene.cpp \
-../main.cpp 
+../math/MathUtil.cpp \
+../math/Quaternion.cpp \
+../math/TransformUtils.cpp \
+../math/Vec2.cpp \
+../math/Vec3.cpp \
+../math/Vec4.cpp 
 
 OBJS += \
-./Camera.o \
-./ColorRGB.o \
-./Image.o \
-./MainWindow.o \
-./Object.o \
-./Ray.o \
-./Scene.o \
-./main.o 
+./math/MathUtil.o \
+./math/Quaternion.o \
+./math/TransformUtils.o \
+./math/Vec2.o \
+./math/Vec3.o \
+./math/Vec4.o 
 
 CPP_DEPS += \
-./Camera.d \
-./ColorRGB.d \
-./Image.d \
-./MainWindow.d \
-./Object.d \
-./Ray.d \
-./Scene.d \
-./main.d 
+./math/MathUtil.d \
+./math/Quaternion.d \
+./math/TransformUtils.d \
+./math/Vec2.d \
+./math/Vec3.d \
+./math/Vec4.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-%.o: ../%.cpp
+math/%.o: ../math/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"

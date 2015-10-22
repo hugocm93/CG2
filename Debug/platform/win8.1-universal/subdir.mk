@@ -4,38 +4,26 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Camera.cpp \
-../ColorRGB.cpp \
-../Image.cpp \
-../MainWindow.cpp \
-../Object.cpp \
-../Ray.cpp \
-../Scene.cpp \
-../main.cpp 
+../platform/win8.1-universal/Cocos2dRenderer.cpp \
+../platform/win8.1-universal/OpenGLES.cpp \
+../platform/win8.1-universal/OpenGLESPage.xaml.cpp \
+../platform/win8.1-universal/pch.cpp 
 
 OBJS += \
-./Camera.o \
-./ColorRGB.o \
-./Image.o \
-./MainWindow.o \
-./Object.o \
-./Ray.o \
-./Scene.o \
-./main.o 
+./platform/win8.1-universal/Cocos2dRenderer.o \
+./platform/win8.1-universal/OpenGLES.o \
+./platform/win8.1-universal/OpenGLESPage.xaml.o \
+./platform/win8.1-universal/pch.o 
 
 CPP_DEPS += \
-./Camera.d \
-./ColorRGB.d \
-./Image.d \
-./MainWindow.d \
-./Object.d \
-./Ray.d \
-./Scene.d \
-./main.d 
+./platform/win8.1-universal/Cocos2dRenderer.d \
+./platform/win8.1-universal/OpenGLES.d \
+./platform/win8.1-universal/OpenGLESPage.xaml.d \
+./platform/win8.1-universal/pch.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-%.o: ../%.cpp
+platform/win8.1-universal/%.o: ../platform/win8.1-universal/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"

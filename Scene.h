@@ -8,10 +8,13 @@
 #ifndef SCENE_H_
 #define SCENE_H_
 
+#include "Image.h"
+
 class Scene {
 public:
-	Scene();
+	Scene(char* fileName);
 	virtual ~Scene();
+	Image* render();
 };
 
 #endif /* SCENE_H_ */

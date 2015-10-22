@@ -8,6 +8,7 @@
 #include "MainWindow.h"
 
 
+
 int main(int argc, char* argv[]){
 
 	IupOpen(&argc, &argv);

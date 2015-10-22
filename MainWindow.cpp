@@ -6,6 +6,7 @@
  */
 
 #include "MainWindow.h"
+#include "Scene.h"
 
 MainWindow::MainWindow() {
 
@@ -61,6 +62,15 @@ Ihandle* MainWindow::IupSButton(char const * image_file, char const * tip, Icall
 	IupSetCallback(button, "ACTION", callback);
 
 	return button;
+}
+
+void MainWindow::IupCanvasResize( Ihandle* canvas, Ihandle* parent_dialog, int new_width, int new_height )
+{
+	char buffer[64];
+	sprintf(buffer,"%dx%d",new_width,new_height);
+	IupStoreAttribute(canvas, IUP_RASTERSIZE, buffer);
+	IupSetAttribute(parent_dialog, IUP_RASTERSIZE, NULL);
+	IupShowXY(parent_dialog, IUP_CENTER, IUP_CENTER);
 }
 
 int MainWindow::repaint_cb(Ihandle *self)
@@ -145,6 +155,10 @@ int MainWindow::save_cb(Ihandle *ih)
 
 	/*Save the image*/
 	Image* image = (Image*)IupGetAttribute(ih, (const char*)"image");
+	if(image==NULL){
+		IupSetfAttribute(msg, "TITLE", "Save failed. No image to save.");
+		return IUP_DEFAULT;
+	}
 	image->imgWriteBMP(filename);
 
 	return IUP_DEFAULT;
@@ -170,14 +184,10 @@ int MainWindow::load_cb(Ihandle* ih)
 		return IUP_DEFAULT;
 	}
 
-	//read file
-	//
-	//
-	//
-	//
-	//
-	//
-	//
+	/*Create scene and set it as an attribute of the dialog*/
+	Scene* scene = new Scene(filename);
+	Ihandle* dialog = (Ihandle*)IupGetAttribute(ih, "dialog");
+	IupSetAttribute(dialog, "scene", (const char *)scene);
 
 	IupSetfAttribute(msg, "TITLE", "Scene loaded. Click the render button.");
 
@@ -192,12 +202,30 @@ int MainWindow::exit_cb(Ihandle* ih)
 
 int MainWindow::render_cb(Ihandle* ih)
 {
-	//Do rendering here
-	//
-	//
-	//
-	//
-	//
+	/*Retrieve scene from the dialog and render the scene*/
+	Scene* scene = (Scene*)IupGetAttribute(ih, (const char*)"scene");
+	if(scene==NULL){
+		/*Update message bar*/
+		Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");
+		IupSetfAttribute(msg, "TITLE", "Error rendering the scene. It was not loaded.");
+
+		return IUP_DEFAULT;
+	}
+
+	/*Render the scene into an image*/
+	Image* renderedScene = scene->render();
+
+	/*Retrieve canvas*/
+	Ihandle* canvas = (Ihandle*)IupGetAttribute(ih, "canvas");
+
+	/*Retrieve dialog and reset its image*/
+	Ihandle* dialog = (Ihandle*)IupGetAttribute(ih, "dialog");
+	IupSetAttribute(dialog, "image", (const char *)renderedScene);
+	repaint_cb(canvas);
+
+	/* update canvas size and repaint */
+	IupCanvasResize(canvas,dialog,renderedScene->imgGetWidth(),renderedScene->imgGetHeight());
+	repaint_cb(canvas);
 
 	/*Update message bar*/
 	Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");
