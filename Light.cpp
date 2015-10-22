@@ -1,19 +1,18 @@
 /*
- * Object.cpp
+ * Light.cpp
  *
- *  Created on: Oct 21, 2015
+ *  Created on: Oct 22, 2015
  *      Author: hugocm93
  */
 
-#include "Object.h"
+#include "Light.h"
 
-
-Object::Object() {
+Light::Light() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Object::~Object() {
+Light::~Light() {
 	// TODO Auto-generated destructor stub
 }
 

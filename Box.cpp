@@ -1,19 +1,18 @@
 /*
- * Object.cpp
+ * Box.cpp
  *
- *  Created on: Oct 21, 2015
+ *  Created on: Oct 22, 2015
  *      Author: hugocm93
  */
 
-#include "Object.h"
+#include "Box.h"
 
-
-Object::Object() {
+Box::Box() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Object::~Object() {
+Box::~Box() {
 	// TODO Auto-generated destructor stub
 }
 

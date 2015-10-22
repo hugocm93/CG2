@@ -1,19 +1,18 @@
 /*
- * Object.cpp
+ * Texture.cpp
  *
- *  Created on: Oct 21, 2015
+ *  Created on: Oct 22, 2015
  *      Author: hugocm93
  */
 
-#include "Object.h"
+#include "Texture.h"
 
-
-Object::Object() {
+Texture::Texture() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Object::~Object() {
+Texture::~Texture() {
 	// TODO Auto-generated destructor stub
 }
 

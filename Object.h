@@ -8,6 +8,11 @@
 #ifndef OBJECT_H_
 #define OBJECT_H_
 
+#include "Material.h"
+#include "Vec3.hpp"
+
+typedef Vec3<double> Vec3d;
+
 class Object {
 public:
 	Object();

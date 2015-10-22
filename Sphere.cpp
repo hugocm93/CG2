@@ -1,19 +1,18 @@
 /*
- * Object.cpp
+ * Sphere.cpp
  *
- *  Created on: Oct 21, 2015
+ *  Created on: Oct 22, 2015
  *      Author: hugocm93
  */
 
-#include "Object.h"
+#include "Sphere.h"
 
-
-Object::Object() {
+Sphere::Sphere() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Object::~Object() {
+Sphere::~Sphere() {
 	// TODO Auto-generated destructor stub
 }
 

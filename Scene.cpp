@@ -7,11 +7,34 @@
 
 #include "Scene.h"
 #include "ColorRGB.h"
-
+#include <cstring>
 #include <iostream>
+#include <cstdio>
 
 Scene::Scene(char* fileName){
-	std::cout << "Path is " << fileName << std::endl;
+	//Initialize fields
+
+	char aux1[20];
+	FILE* file = fopen(fileName, "r");
+
+	fscanf(file, "%[^\n]", aux1);
+
+	if(!strcmp(aux1, "RT 5")){
+		cout << "The file is not correct." << endl;
+	}
+	else{
+		cout << "The file is correct!" << endl;
+	}
+
+	fscanf(file, " %[^ ]", aux1);
+
+	cout << '#'<< aux1 << '#'<< endl;
+
+	if(strcmp(aux1, "SCENE")==0){
+		float r, g, b;
+		fscanf(file, " %f %f %f", &r, &g, &b);
+		printf("wer %f", r); fflush(stdout);
+	}
 
 }
 
@@ -28,12 +51,12 @@ Image* Scene::render(){
 	ColorRGB* lightGray = new ColorRGB(0.8, 0.8, 0.8);
 	ColorRGB* darkGray = new ColorRGB(0.5, 0.5, 0.5);
 
-	#define SQUARE 15
+#define SQUARE 15
 	int x,y;
 	for (y=0;y<h;y++){
 		for (x=0;x<w;x++) {
-			if(((y - y%SQUARE)/SQUARE)%2 == 0){
-				if(((x - x%SQUARE)/SQUARE)%2 == 0){
+			if((y/SQUARE)%2 == 0){
+				if((x/SQUARE)%2 == 0){
 					image->imgSetPixel3fv(x,y,lightGray->getColor());
 				}
 				else{
@@ -41,7 +64,7 @@ Image* Scene::render(){
 				}
 			}
 			else{
-				if(((x - x%SQUARE)/SQUARE)%2 != 0){
+				if(((x)/SQUARE)%2 != 0){
 					image->imgSetPixel3fv(x,y,lightGray->getColor());
 				}
 				else{

@@ -512,7 +512,7 @@ void Image::imgReadPFM(char *filename)
 		fgets(line, 256, fp);
 
 	fgetc(fp);
-
+	img = new Image();
 	img->imgCreate(w,h,3);
 	fread( img->buf, 3*w*h, sizeof(float), fp );
 
