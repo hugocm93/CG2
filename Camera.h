@@ -13,17 +13,18 @@
 typedef Vec3<double> Vec3d;
 
 class Camera {
+public:
+	int imageWidth;
+	int imageHeight;
 private:
-	Vec3d eyePosition;
-	Vec3d refPosition;
-	Vec3d upVector;
+	Vec3d* eyePosition;
+	Vec3d* refPosition;
+	Vec3d* upVector;
 	float apertureAngle;
 	float nearPlane;
 	float farPlane;
-	int imageWidth;
-	int imageHeight;
 public:
-	Camera();
+	Camera(Vec3d *eyePosition, Vec3d *refPosition, Vec3d *upVector, float apertureAngle, float nearPlane, float farPlane, float imgWidth, float imgHeight);
 	virtual ~Camera();
 };
 

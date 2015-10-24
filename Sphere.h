@@ -13,11 +13,10 @@
 
 class Sphere: public Object {
 private:
-	Material* material;
-	float ray;
-	Vec3d position;
+	float radius;
+	Vec3d* position;
 public:
-	Sphere();
+	Sphere(Material* mat, float radius, Vec3d* position);
 	virtual ~Sphere();
 };
 

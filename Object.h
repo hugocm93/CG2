@@ -14,6 +14,10 @@
 typedef Vec3<double> Vec3d;
 
 class Object {
+
+protected:
+	Material* material;
+
 public:
 	Object();
 	virtual ~Object();

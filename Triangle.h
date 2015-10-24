@@ -12,17 +12,16 @@
 
 class Triangle: public Object {
 private:
-	Material* material;
-	Vec3d vertex1;
-	Vec3d vertex2;
-	Vec3d vertex3;
+	Vec3d* vertex1;
+	Vec3d* vertex2;
+	Vec3d* vertex3;
 
 	/*Following vec3s are used as vec2s*/
-	Vec3d textureVertex1;
-	Vec3d textureVertex2;
-	Vec3d textureVertex3;
+	Vec3d* textureVertex1;
+	Vec3d* textureVertex2;
+	Vec3d* textureVertex3;
 public:
-	Triangle();
+	Triangle(Material* mat, Vec3d* vertex1, Vec3d* vertex2, Vec3d* vertex3, Vec3d* textureVertex1, Vec3d* textureVertex2, Vec3d* textureVertex3);
 	virtual ~Triangle();
 };
 

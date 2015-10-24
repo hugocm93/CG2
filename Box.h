@@ -12,11 +12,10 @@
 
 class Box: public Object {
 private:
-	Material* material;
-	Vec3d leftBottomCorner;
-	Vec3d rightTopCorner;
+	Vec3d* leftBottomCorner;
+	Vec3d* rightTopCorner;
 public:
-	Box();
+	Box(Material* mat, Vec3d* leftBottomCorner, Vec3d* rightTopCorner);
 	virtual ~Box();
 };
 

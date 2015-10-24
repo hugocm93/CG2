@@ -7,8 +7,10 @@
 
 #include "Sphere.h"
 
-Sphere::Sphere() {
-	// TODO Auto-generated constructor stub
+Sphere::Sphere(Material* mat, float radius, Vec3d* position){
+	this->material = mat;
+	this->radius = radius;
+	this->position = position;
 
 }
 

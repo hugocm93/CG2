@@ -7,8 +7,9 @@
 
 #include "Light.h"
 
-Light::Light() {
-	// TODO Auto-generated constructor stub
+Light::Light(Vec3d* position, ColorRGB* intensity){
+	this->position = position;
+	this->intensity = intensity;
 
 }
 

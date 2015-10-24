@@ -8,7 +8,7 @@
 #ifndef SCENE_H_
 #define SCENE_H_
 
-#include <list>
+#include <vector>
 #include "Image.h"
 #include "ColorRGB.h"
 #include "Texture.h"
@@ -16,6 +16,9 @@
 #include "Material.h"
 #include "Light.h"
 #include "Object.h"
+#include "Vec3.hpp"
+
+typedef Vec3<double> Vec3d;
 
 using namespace std;
 
@@ -27,9 +30,9 @@ private:
 	Texture* texture;
 
 	Camera* camera;
-	list<Material> materials;
-	list<Light> lights;
-	list<Object> objects;
+	vector<Material> materials;
+	vector<Light> lights;
+	vector<Object> objects;
 
 public:
 	Scene(char* fileName);

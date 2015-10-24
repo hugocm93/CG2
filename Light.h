@@ -15,11 +15,11 @@ typedef Vec3<double> Vec3d;
 
 class Light {
 private:
-	Vec3d position;
+	Vec3d* position;
 	ColorRGB* intensity;
 
 public:
-	Light();
+	Light(Vec3d* position, ColorRGB* intensity);
 	virtual ~Light();
 };
 

@@ -19,6 +19,10 @@ Material::Material(string name, ColorRGB* kd, ColorRGB*ks, float especular, floa
 
 }
 
+string Material::getName(){
+	return this->name;
+}
+
 Material::~Material() {
 	// TODO Auto-generated destructor stub
 }

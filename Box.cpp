@@ -7,9 +7,10 @@
 
 #include "Box.h"
 
-Box::Box() {
-	// TODO Auto-generated constructor stub
-
+Box::Box(Material* mat, Vec3d* leftBottomCorner, Vec3d* rightTopCorner){
+	this->material = mat;
+	this->leftBottomCorner = leftBottomCorner;
+	this->rightTopCorner = rightTopCorner;
 }
 
 Box::~Box() {
