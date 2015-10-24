@@ -7,7 +7,7 @@
 
 #include "Texture.h"
 
-Texture::Texture() {
+Texture::Texture(char* name) {
 	// TODO Auto-generated constructor stub
 
 }

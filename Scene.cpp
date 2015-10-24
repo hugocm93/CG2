@@ -10,15 +10,19 @@
 #include <cstring>
 #include <iostream>
 #include <cstdio>
+#include <locale>
 
 Scene::Scene(char* fileName){
-	//Initialize fields
 
-	char aux1[20];
+	/*Set encoding defaut for recognizing dots in the float format*/
+	std::locale::global( std::locale("C"));
+
+	/*Open file in read mode*/
 	FILE* file = fopen(fileName, "r");
 
+	/*Check if file has the rt5 tag*/
+	char aux1[20];
 	fscanf(file, "%[^\n]", aux1);
-
 	if(!strcmp(aux1, "RT 5")){
 		cout << "The file is not correct." << endl;
 	}
@@ -26,16 +30,25 @@ Scene::Scene(char* fileName){
 		cout << "The file is correct!" << endl;
 	}
 
+	/*Read the scene parameters*/
 	fscanf(file, " %[^ ]", aux1);
-
-	cout << '#'<< aux1 << '#'<< endl;
-
+	fscanf(file, "\n");
 	if(strcmp(aux1, "SCENE")==0){
-		float r, g, b;
+		float r = 0, g = 0, b = 0;
 		fscanf(file, " %f %f %f", &r, &g, &b);
-		printf("wer %f", r); fflush(stdout);
-	}
+		this->backGroundColor = new ColorRGB(r,g,b);
 
+		fscanf(file, " %f %f %f", &r, &g, &b);
+		this->ambientLightIntensity = new ColorRGB(r,g,b);
+
+		fscanf(file, " %[^\n]", aux1);
+		if(strcmp(aux1, "null")==0){
+			this->texture = new Texture(NULL);
+		}
+		else{
+			this->texture = new Texture(aux1);
+		}
+	}
 }
 
 Scene::~Scene() {

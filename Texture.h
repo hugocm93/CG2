@@ -15,7 +15,7 @@ class Texture {
 private:
 	Image* image;
 public:
-	Texture();
+	Texture(char* name);
 	virtual ~Texture();
 	//get color for pixel x y
 };
