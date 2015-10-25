@@ -309,7 +309,6 @@ void Image::imgReadBMP(char *filename)
 
 	/* abre o arquivo com a imagem BMP */
 	filePtr = fopen(filename, "rb");
-	std::cout << filename << std::endl;
 	assert(filePtr);
 
 	/* verifica se eh uma imagem bmp */
@@ -393,9 +392,6 @@ void Image::imgReadBMP(char *filename)
 
 	free(linedata);
 	fclose(filePtr);
-
-	std::cout << "asdasa"<< std::endl;
-
 }
 
 int Image::imgWriteBMP(char *filename)

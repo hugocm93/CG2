@@ -16,13 +16,22 @@
 #include <locale>
 
 void skipComments(char* aux1, FILE* file){
-	do{
-		fscanf(file, " %[^ ]", aux1);
-		if(aux1[0]=='!'){
-			fscanf(file, "%[^\n][^!]");
-		}
-		//cout << garbage << endl;
-	}while(aux1[0]=='!' && feof(file) != 1);
+	fscanf(file, " %[^ ][^\t]", aux1);
+	if(aux1[0]=='!'){
+		fscanf(file, "%[^!]");
+	}
+}
+
+char* removeGarbage(char *str) {
+
+	char* temp = (char*)malloc(sizeof(char)*40);
+	int i;
+	for(i = 0; i<40 && str[i]!='\n' && str[i]!='\t' && str[i]!='\v' && str[i]!='\t' && str[i]!='\r' && str[i]!='\f' && str[i]!='\0' && str[i]!=' '; i++){
+		temp[i] = str[i];
+	}
+	temp[i] = '\0';
+
+	return temp;
 }
 
 Scene::Scene(char* fileName){
@@ -34,7 +43,7 @@ Scene::Scene(char* fileName){
 	FILE* file = fopen(fileName, "r");
 
 	/*Check if file has the rt5 tag*/
-	char aux1[500];
+	char* aux1 = (char*)malloc(sizeof(char)*500);
 	skipComments(aux1, file);
 	fscanf(file, "%[^\n]", aux1);
 	if(!strcmp(aux1, "RT 5")){
@@ -57,13 +66,12 @@ Scene::Scene(char* fileName){
 		this->ambientLightIntensity = new ColorRGB(r,g,b);
 
 		fscanf(file, " %[^\n]", aux1);
-
-		//aux1[4] = '\0';
-		cout << '3'<< aux1<< '3'<< endl;
-		if(aux1[0]=='n' && aux1[1]=='u' && aux1[2]=='l' && aux1[3]=='l'){
+		aux1 = removeGarbage(aux1);
+		if(strcmp(aux1, "null")==0){
 			this->texture = NULL;
 		}
 		else{
+
 			this->texture = new Texture(aux1);
 		}
 	}
@@ -99,9 +107,8 @@ Scene::Scene(char* fileName){
 		if(strcmp(aux1, "MATERIAL")==0){
 			cout << "MATERIAL" << endl;
 
-			char name[50];
+			char* name = (char*)malloc(sizeof(char)*100);
 			fscanf(file,"%[^ ]", name);
-
 			float r, g, b;
 			fscanf(file, "%f %f %f",&r, &g, &b );
 			ColorRGB* kd = new ColorRGB(r, g, b);
@@ -111,9 +118,10 @@ Scene::Scene(char* fileName){
 			float n, k, n2, o;
 			fscanf(file, "%f %f %f %f ",&n, &k, &n2, &o );
 
-			fscanf(file,"%[^\n]", name);
+			fscanf(file,"%[^\n][^ ][^\t]", name);
+			name = removeGarbage(name);
 			Texture* tex;
-			if(name[0]=='n' && name[1]=='u' && name[2]=='l' && name[3]=='l'){
+			if(strcmp(name, "null")==0){
 				tex = NULL;
 			}
 			else{
@@ -279,24 +287,31 @@ Image* Scene::render(){
 	int x,y;
 	for (y=0;y<h;y++){
 		for (x=0;x<w;x++) {
-			if((y/SQUARE)%2 == 0){
-				if((x/SQUARE)%2 == 0){
-					image->imgSetPixel3fv(x,y,lightGray->getColor());
-				}
-				else{
-					image->imgSetPixel3fv(x,y,darkGray->getColor());
-				}
-			}
-			else{
-				if(((x)/SQUARE)%2 != 0){
-					image->imgSetPixel3fv(x,y,lightGray->getColor());
-				}
-				else{
-					image->imgSetPixel3fv(x,y,darkGray->getColor());
-				}
-			}
+			//			if((y/SQUARE)%2 == 0){
+			//				if((x/SQUARE)%2 == 0){
+			//					image->imgSetPixel3fv(x,y,lightGray->getColor());
+			//				}
+			//				else{
+			//					image->imgSetPixel3fv(x,y,darkGray->getColor());
+			//				}
+			//			}
+			//			else{
+			//				if(((x)/SQUARE)%2 != 0){
+			//					image->imgSetPixel3fv(x,y,lightGray->getColor());
+			//				}
+			//				else{
+			//					image->imgSetPixel3fv(x,y,darkGray->getColor());
+			//				}
+			//			}
+
+			image->imgSetPixel3fv(x,y,this->backGroundColor->getColor());
+
+
 		}
 	}
+
+
+
 
 	return image;
 }

@@ -56,8 +56,9 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Model|base|platform|math|Interface" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="cenasSimplesRT4/Textures|Model|base|platform|math|Interface" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Interface"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="cenasSimplesRT4/Textures"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

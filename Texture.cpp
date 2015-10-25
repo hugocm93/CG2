@@ -25,11 +25,8 @@ Texture::Texture(char* name) {
 	cCurrentPath[sizeof(cCurrentPath) - 1] = '/0'; /* not really required */
 	strcat(cCurrentPath, "/cenasSimplesRT4/Textures/");
 	strcat(cCurrentPath, name);
-	std::cout << cCurrentPath << std::endl;
 	this->image = new Image();
 	this->image->imgReadBMP(cCurrentPath);
-
-
 }
 
 Texture::~Texture() {
