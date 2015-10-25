@@ -17,17 +17,19 @@ class Camera {
 public:
 	int imageWidth;
 	int imageHeight;
-private:
 	Vec3d* eyePosition;
 	Vec3d* refPosition;
 	Vec3d* upVector;
 	float apertureAngle;
 	float nearPlane;
 	float farPlane;
+
 public:
 	Camera(Vec3d *eyePosition, Vec3d *refPosition, Vec3d *upVector, float apertureAngle, float nearPlane, float farPlane, float imgWidth, float imgHeight);
 	virtual ~Camera();
-	Ray* getRay(int x, int y);
+
+	/*Returns a ray that passes through a certain point p(x,y) (by reference)*/
+	void getRay(int x, int y, Ray* ray);
 };
 
 #endif /* CAMERA_H_ */

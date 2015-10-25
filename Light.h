@@ -21,6 +21,9 @@ private:
 public:
 	Light(Vec3d* position, ColorRGB* intensity);
 	virtual ~Light();
+
+	Vec3d* getPosition();
+	ColorRGB* getIntensity();
 };
 
 #endif /* LIGHT_H_ */

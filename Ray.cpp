@@ -8,7 +8,15 @@
 #include "Ray.h"
 
 Ray::Ray() {
-	// TODO Auto-generated constructor stub
+	this->o = new Vec3d(0,0,0);;
+	this->d = new Vec3d(0,0,0);
+	this->t = 0;
+}
+
+Ray::Ray(Vec3d* o, Vec3d* d, float t){
+	this->o = o;
+	this->d = d;
+	this->t = t;
 
 }
 

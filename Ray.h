@@ -12,12 +12,13 @@
 typedef Vec3<double> Vec3d;
 
 class Ray {
-private:
+public:
 	Vec3d* o;
 	Vec3d* d;
 	float t;
 public:
 	Ray();
+	Ray(Vec3d* o, Vec3d* d, float t);
 	virtual ~Ray();
 };
 

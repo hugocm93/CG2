@@ -18,16 +18,12 @@
 
 class MainWindow {
 
-	///////////////////////////////Fields of the class
-
 private:
 	Ihandle* dialog;
 	Ihandle* canvas;
 	Ihandle* toolBar;
 	Ihandle* messageBar;
 	Image* image;
-
-	//////////////////////////////Methods of the class
 
 public:
 	MainWindow();

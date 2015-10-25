@@ -14,6 +14,14 @@ Light::Light(Vec3d* position, ColorRGB* intensity){
 }
 
 Light::~Light() {
-	// TODO Auto-generated destructor stub
+	delete position;
+	delete  intensity;
+}
+
+Vec3d* Light::getPosition(){
+	return this->position;
+}
+ColorRGB* Light::getIntensity(){
+	return this->intensity;
 }
 

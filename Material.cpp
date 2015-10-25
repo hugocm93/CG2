@@ -19,11 +19,44 @@ Material::Material(string name, ColorRGB* kd, ColorRGB*ks, float especular, floa
 
 }
 
+Material::~Material() {
+	delete kd;
+	delete ks;
+	delete texture;
+}
+
 string Material::getName(){
 	return this->name;
 }
 
-Material::~Material() {
-	// TODO Auto-generated destructor stub
+
+float Material::getEspecular(){
+	return especular;
 }
+
+ColorRGB* Material::getKd(){
+	return kd;
+}
+
+ColorRGB* Material::getKs(){
+	return ks;
+}
+
+float Material::getOpacity(){
+	return opacity;
+}
+
+float Material::getReflexCoeficient(){
+	return reflexCoeficient;
+}
+
+float Material::getRefractionIndex(){
+	return refractionIndex;
+}
+
+Texture* Material::getTexture(){
+	return texture;
+}
+
+
 

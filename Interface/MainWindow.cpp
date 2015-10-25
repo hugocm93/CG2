@@ -185,6 +185,10 @@ int MainWindow::load_cb(Ihandle* ih)
 	}
 
 	/*Create scene and set it as an attribute of the dialog*/
+	Scene* oldScene = (Scene*)IupGetAttribute(ih, "scene");
+	if(oldScene==NULL){
+		delete oldScene;
+	}
 	Scene* scene = new Scene(filename);
 	Ihandle* dialog = (Ihandle*)IupGetAttribute(ih, "dialog");
 	IupSetAttribute(dialog, "scene", (const char *)scene);

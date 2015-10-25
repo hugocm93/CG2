@@ -17,7 +17,6 @@ public:
 public:
 	Texture(char* name);
 	virtual ~Texture();
-	//get color for pixel x y
 };
 
 #endif /* TEXTURE_H_ */

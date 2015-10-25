@@ -28,9 +28,15 @@ private:
 public:
 	Material(string name, ColorRGB* kd, ColorRGB*ks, float especular, float reflexCoeficient, float refractionIndex, float opacity, Texture* texture);
 	virtual ~Material();
+
 	string getName();
-
-
+	float getEspecular();
+	ColorRGB* getKd();
+	ColorRGB* getKs();
+	float getOpacity();
+	float getReflexCoeficient();
+	float getRefractionIndex();
+	Texture* getTexture();
 };
 
 #endif /* MATERIAL_H_ */

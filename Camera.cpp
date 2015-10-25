@@ -23,3 +23,7 @@ Camera::~Camera() {
 	// TODO Auto-generated destructor stub
 }
 
+void Camera::getRay(int x, int y, Ray* ray){
+	//TO-DO: get ray
+}
+

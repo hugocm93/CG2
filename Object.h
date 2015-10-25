@@ -22,8 +22,14 @@ protected:
 public:
 	Object();
 	virtual ~Object();
+
+	/*Given a ray, this method calculates the intersection with the object and returns the position of the intersection*/
 	virtual Vec3d* computeIntersection(Ray* ray);
+
+	/*Given a position, this method calculates de normal vector at that point*/
 	virtual Vec3d* computeNormal(Vec3d* position);
+
+	/*Calculates the color according to a point*/
 	virtual ColorRGB* getColor();
 };
 
