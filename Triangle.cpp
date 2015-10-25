@@ -6,6 +6,7 @@
  */
 
 #include "Triangle.h"
+#include "Ray.h"
 
 Triangle::Triangle(Material* mat, Vec3d* vertex1, Vec3d* vertex2, Vec3d* vertex3, Vec3d* textureVertex1, Vec3d* textureVertex2, Vec3d* textureVertex3){
 	this->material = mat;
@@ -21,5 +22,15 @@ Triangle::Triangle(Material* mat, Vec3d* vertex1, Vec3d* vertex2, Vec3d* vertex3
 
 Triangle::~Triangle() {
 	// TODO Auto-generated destructor stub
+}
+
+Vec3d* Triangle::computeIntersection(Ray* ray){
+	return NULL;
+}
+Vec3d* Triangle::computeNormal(Vec3d* position){
+	return NULL;
+}
+ColorRGB* Triangle::getColor(){
+	return NULL;
 }
 

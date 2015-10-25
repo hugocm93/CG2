@@ -16,11 +16,10 @@
 #include <locale>
 
 void skipComments(char* aux1, FILE* file){
-	char garbage[500];
 	do{
 		fscanf(file, " %[^ ]", aux1);
 		if(aux1[0]=='!'){
-			fscanf(file, "%[^\n][^!]", &garbage);
+			fscanf(file, "%[^\n][^!]");
 		}
 		//cout << garbage << endl;
 	}while(aux1[0]=='!' && feof(file) != 1);
@@ -58,8 +57,11 @@ Scene::Scene(char* fileName){
 		this->ambientLightIntensity = new ColorRGB(r,g,b);
 
 		fscanf(file, " %[^\n]", aux1);
-		if(strcmp(aux1, "null")==0){
-			this->texture = new Texture(NULL);
+
+		//aux1[4] = '\0';
+		cout << '3'<< aux1<< '3'<< endl;
+		if(aux1[0]=='n' && aux1[1]=='u' && aux1[2]=='l' && aux1[3]=='l'){
+			this->texture = NULL;
 		}
 		else{
 			this->texture = new Texture(aux1);
@@ -107,11 +109,17 @@ Scene::Scene(char* fileName){
 			ColorRGB* ks = new ColorRGB(r, g, b);
 
 			float n, k, n2, o;
-			fscanf(file, "%f %f %f %f",&n, &k, &n2, &o );
+			fscanf(file, "%f %f %f %f ",&n, &k, &n2, &o );
 
-			char text[40];
 			fscanf(file,"%[^\n]", name);
-			Texture* tex = new Texture(text);
+			Texture* tex;
+			if(name[0]=='n' && name[1]=='u' && name[2]=='l' && name[3]=='l'){
+				tex = NULL;
+			}
+			else{
+				tex = new Texture(name);
+			}
+			fscanf(file,"\n");
 
 			this->materials.push_back(*new Material(name,kd,ks,n, k, n2, o, tex));
 		}
@@ -119,7 +127,7 @@ Scene::Scene(char* fileName){
 
 
 	do{
-		/*Read the material parameters*/
+		/*Read the light parameters*/
 		if(strcmp(aux1, "LIGHT")!=0){
 			skipComments(aux1, file);
 			fscanf(file, "\n");
@@ -157,7 +165,7 @@ Scene::Scene(char* fileName){
 			fscanf(file,"%f %f %f %f", &r, &x, &y, &z);
 
 			Material* temp;
-			for(int i = 0; i < this->materials.size() ; i++){
+			for(unsigned int i = 0; i < this->materials.size() ; i++){
 				if(strcmp(this->materials[i].getName().c_str(), material)==0){
 					temp = &this->materials[i];
 				}
@@ -192,7 +200,7 @@ Scene::Scene(char* fileName){
 			Vec3d* vec2 = new Vec3d(x, y, z);
 
 			Material* temp;
-			for(int i = 0; i < this->materials.size() ; i++){
+			for(unsigned int i = 0; i < this->materials.size() ; i++){
 				if(strcmp(this->materials[i].getName().c_str(), material)==0){
 					temp = &this->materials[i];
 				}
@@ -235,10 +243,8 @@ Scene::Scene(char* fileName){
 			fscanf(file,"%f %f", &x, &y);
 			Vec3d* vec6 = new Vec3d(x, y, z);
 
-
-
 			Material* temp;
-			for(int i = 0; i < this->materials.size() ; i++){
+			for(unsigned int i = 0; i < this->materials.size() ; i++){
 				if(strcmp(this->materials[i].getName().c_str(), material)==0){
 					temp = &this->materials[i];
 				}

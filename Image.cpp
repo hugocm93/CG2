@@ -309,6 +309,7 @@ void Image::imgReadBMP(char *filename)
 
 	/* abre o arquivo com a imagem BMP */
 	filePtr = fopen(filename, "rb");
+	std::cout << filename << std::endl;
 	assert(filePtr);
 
 	/* verifica se eh uma imagem bmp */

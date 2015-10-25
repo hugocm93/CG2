@@ -6,14 +6,25 @@
  */
 
 #include "Object.h"
+#include "Ray.h"
 
 
 Object::Object() {
-	// TODO Auto-generated constructor stub
+	this->material = NULL;
 
 }
 
 Object::~Object() {
 	// TODO Auto-generated destructor stub
+}
+
+Vec3d* Object::computeIntersection(Ray* ray){
+	return NULL;
+}
+Vec3d* Object::computeNormal(Vec3d* position){
+	return NULL;
+}
+ColorRGB* Object::getColor(){
+	return NULL;
 }
 

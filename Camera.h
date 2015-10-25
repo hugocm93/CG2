@@ -9,6 +9,7 @@
 #define CAMERA_H_
 
 #include "Vec3.hpp"
+#include "Ray.h"
 
 typedef Vec3<double> Vec3d;
 
@@ -26,6 +27,7 @@ private:
 public:
 	Camera(Vec3d *eyePosition, Vec3d *refPosition, Vec3d *upVector, float apertureAngle, float nearPlane, float farPlane, float imgWidth, float imgHeight);
 	virtual ~Camera();
+	Ray* getRay(int x, int y);
 };
 
 #endif /* CAMERA_H_ */

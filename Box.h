@@ -17,6 +17,10 @@ private:
 public:
 	Box(Material* mat, Vec3d* leftBottomCorner, Vec3d* rightTopCorner);
 	virtual ~Box();
+
+	virtual Vec3d* computeIntersection(Ray* ray);
+	virtual Vec3d* computeNormal(Vec3d* position);
+	virtual ColorRGB* getColor();
 };
 
 #endif /* BOX_H_ */

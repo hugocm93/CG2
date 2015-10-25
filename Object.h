@@ -10,6 +10,7 @@
 
 #include "Material.h"
 #include "Vec3.hpp"
+#include "Ray.h"
 
 typedef Vec3<double> Vec3d;
 
@@ -21,6 +22,9 @@ protected:
 public:
 	Object();
 	virtual ~Object();
+	virtual Vec3d* computeIntersection(Ray* ray);
+	virtual Vec3d* computeNormal(Vec3d* position);
+	virtual ColorRGB* getColor();
 };
 
 #endif /* OBJECT_H_ */

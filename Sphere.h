@@ -10,6 +10,7 @@
 
 #include "Vec3.hpp"
 #include "Object.h"
+#include "Ray.h"
 
 class Sphere: public Object {
 private:
@@ -18,6 +19,9 @@ private:
 public:
 	Sphere(Material* mat, float radius, Vec3d* position);
 	virtual ~Sphere();
+	virtual Vec3d* computeIntersection(Ray* ray);
+	virtual Vec3d* computeNormal(Vec3d* position);
+	virtual ColorRGB* getColor();
 };
 
 #endif /* SPHERE_H_ */
