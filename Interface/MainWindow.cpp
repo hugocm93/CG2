@@ -12,7 +12,7 @@ MainWindow::MainWindow() {
 
 	/*Create canvas, define the canvas size and bind callbacks*/
 	Ihandle* canvas = IupGLCanvas(NULL);
-	IupSetfAttribute(canvas, IUP_RASTERSIZE, "%dx%d", 640, 480);
+	IupSetfAttribute(canvas, IUP_RASTERSIZE, "%dx%d", 400, 400);
 	IupSetCallback(canvas, IUP_ACTION, (Icallback)repaint_cb);
 	IupSetCallback(canvas, IUP_RESIZE_CB, (Icallback)resize_cb);
 	this->canvas = canvas;
@@ -189,6 +189,16 @@ int MainWindow::load_cb(Ihandle* ih)
 	Ihandle* dialog = (Ihandle*)IupGetAttribute(ih, "dialog");
 	IupSetAttribute(dialog, "scene", (const char *)scene);
 
+	/*Blank image*/
+	Image* blank = scene->blank();
+
+	/*Retrieve canvas*/
+	Ihandle* canvas = (Ihandle*)IupGetAttribute(ih, "canvas");
+
+	/*set dialog's image*/
+	IupSetAttribute(dialog, "image", (const char *)blank);
+	IupUpdate(canvas);
+
 	IupSetfAttribute(msg, "TITLE", "Scene loaded. Click the render button.");
 
 	return IUP_DEFAULT;
@@ -221,11 +231,9 @@ int MainWindow::render_cb(Ihandle* ih)
 	/*Retrieve dialog and reset its image*/
 	Ihandle* dialog = (Ihandle*)IupGetAttribute(ih, "dialog");
 	IupSetAttribute(dialog, "image", (const char *)renderedScene);
-	repaint_cb(canvas);
 
-	/* update canvas size and repaint */
+	/* update canvas size*/
 	IupCanvasResize(canvas,dialog,renderedScene->imgGetWidth(),renderedScene->imgGetHeight());
-	repaint_cb(canvas);
 
 	/*Update message bar*/
 	Ihandle* msg = (Ihandle*)IupGetAttribute(ih, (const char*)"messageBar");

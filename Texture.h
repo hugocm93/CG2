@@ -12,7 +12,7 @@
 
 class Texture {
 
-private:
+public:
 	Image* image;
 public:
 	Texture(char* name);

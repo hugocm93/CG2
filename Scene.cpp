@@ -274,6 +274,41 @@ Scene::~Scene() {
 	// TODO Auto-generated destructor stub
 }
 
+Image* Scene::blank(){
+	int w = 640;
+	int h = 480;
+	Image* image = new Image();
+	image->imgCreate(w, h, 3);
+
+	ColorRGB* lightGray = new ColorRGB(0.8, 0.8, 0.8);
+	ColorRGB* darkGray = new ColorRGB(0.5, 0.5, 0.5);
+
+#define SQUARE 15
+	int x,y;
+	for (y=0;y<h;y++){
+		for (x=0;x<w;x++) {
+			if((y/SQUARE)%2 == 0){
+				if((x/SQUARE)%2 == 0){
+					image->imgSetPixel3fv(x,y,lightGray->getColor());
+				}
+				else{
+					image->imgSetPixel3fv(x,y,darkGray->getColor());
+				}
+			}
+			else{
+				if(((x)/SQUARE)%2 != 0){
+					image->imgSetPixel3fv(x,y,lightGray->getColor());
+				}
+				else{
+					image->imgSetPixel3fv(x,y,darkGray->getColor());
+				}
+			}
+		}
+
+	}
+	return image;
+}
+
 Image* Scene::render(){
 	int w = this->camera->imageWidth;
 	int h = this->camera->imageHeight;
@@ -304,12 +339,17 @@ Image* Scene::render(){
 			//				}
 			//			}
 
-			image->imgSetPixel3fv(x,y,this->backGroundColor->getColor());
-
-
+			if(this->texture == NULL){
+				image->imgSetPixel3fv(x,y,this->backGroundColor->getColor());
+			}
+			else{
+				float color[3];
+				int w2 = this->texture->image->imgGetWidth(), h2 = this->texture->image->imgGetHeight();
+				this->texture->image->imgGetPixel3fv(x%w2, y%h2, color);
+				image->imgSetPixel3fv(x,y,color);
+			}
 		}
 	}
-
 
 
 

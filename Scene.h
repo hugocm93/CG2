@@ -38,6 +38,7 @@ public:
 	Scene(char* fileName);
 	virtual ~Scene();
 	Image* render();
+	Image* blank();
 
 };
 
