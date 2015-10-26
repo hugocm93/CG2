@@ -17,6 +17,8 @@
 #include <cstdio>
 #include <locale>
 
+#define SIZE 50
+
 Scene::Scene(char* fileName){
 	/*Set encoding defaut for recognizing dots in the float format*/
 	std::locale::global( std::locale("C"));
@@ -36,9 +38,9 @@ Scene::Scene(char* fileName){
 	}
 
 	/*Reserve space for the vectors*/
-	this->materials.reserve(50);
-	this->lights.reserve(50);
-	this->objects.reserve(50);
+	this->materials.reserve(SIZE);
+	this->lights.reserve(SIZE);
+	this->objects.reserve(SIZE);
 
 	/*Read the scene parameters*/
 	fscanf(file, " %[^ ][^\t]", aux1);
