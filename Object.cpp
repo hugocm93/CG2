@@ -18,13 +18,14 @@ Object::~Object() {
 	// TODO Auto-generated destructor stub
 }
 
-Vec3d* Object::computeIntersection(Ray* ray){
+float Object::computeIntersection(Ray* ray){
+	//cout << "ObjectComputeIntersection"<< endl;
 	return NULL;
 }
 Vec3d* Object::computeNormal(Vec3d* position){
 	return NULL;
 }
 ColorRGB* Object::getColor(){
-	return NULL;
+	return this->material->getKd();
 }
 

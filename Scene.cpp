@@ -16,6 +16,7 @@
 #include <iostream>
 #include <cstdio>
 #include <locale>
+#include <typeinfo>
 
 #define SIZE 50
 
@@ -112,18 +113,19 @@ Scene::Scene(char* fileName){
 			float n, k, n2, o;
 			fscanf(file, "%f %f %f %f ",&n, &k, &n2, &o );
 
-			fscanf(file,"%[^\n][^ ][^\t]", name);
-			name = removeGarbage(name);
+			char* nameText = (char*)malloc(sizeof(char)*100);
+			fscanf(file,"%[^\n][^ ][^\t]", nameText);
+			nameText = removeGarbage(nameText);
 			Texture* tex;
-			if(strcmp(name, "null")==0){
+			if(strcmp(nameText, "null")==0){
 				tex = NULL;
 			}
 			else{
-				tex = new Texture(name);
+				tex = new Texture(nameText);
 			}
 			fscanf(file,"\n");
+			this->materials.push_back(new Material(name,kd,ks,n, k, n2, o, tex));
 
-			this->materials.push_back(*new Material(name,kd,ks,n, k, n2, o, tex));
 		}
 
 		/*Read the light parameters*/
@@ -138,7 +140,7 @@ Scene::Scene(char* fileName){
 			fscanf(file, "%f %f %f",&r, &g, &b );
 			ColorRGB* intensity = new ColorRGB(r, g, b);
 
-			this->lights.push_back(*new Light(pos, intensity));
+			this->lights.push_back(new Light(pos, intensity));
 		}
 
 		/*Read the sphere parameters*/
@@ -151,16 +153,18 @@ Scene::Scene(char* fileName){
 			float r, x, y, z;
 			fscanf(file,"%f %f %f %f", &r, &x, &y, &z);
 
-			Material* temp;
+			Material* temp = NULL;
 			for(unsigned int i = 0; i < this->materials.size() ; i++){
-				if(strcmp(this->materials[i].getName().c_str(), material)==0){
-					temp = &this->materials[i];
+				cout << '@'<<this->materials[i]->getName().c_str() << '@'<< endl;
+				cout << '@'<<material << '@'<< endl;
+				if(strcmp(this->materials[i]->getName().c_str(), material)==0){
+					temp = this->materials[i];
 				}
 			}
 
 			Vec3d* vec = new Vec3d(x, y, z);
 			Sphere* s = new Sphere(temp, r, vec);
-			this->objects.push_back((Object)*s);
+			this->objects.push_back(s);
 
 		}
 
@@ -179,13 +183,13 @@ Scene::Scene(char* fileName){
 
 			Material* temp;
 			for(unsigned int i = 0; i < this->materials.size() ; i++){
-				if(strcmp(this->materials[i].getName().c_str(), material)==0){
-					temp = &this->materials[i];
+				if(strcmp(this->materials[i]->getName().c_str(), material)==0){
+					temp = this->materials[i];
 				}
 			}
 
 			Box* b = new Box(temp, vec1, vec2);
-			this->objects.push_back((Object)*b);
+			this->objects.push_back(b);
 		}
 
 		/*Read the triangle parameters*/
@@ -213,13 +217,13 @@ Scene::Scene(char* fileName){
 
 			Material* temp;
 			for(unsigned int i = 0; i < this->materials.size() ; i++){
-				if(strcmp(this->materials[i].getName().c_str(), material)==0){
-					temp = &this->materials[i];
+				if(strcmp(this->materials[i]->getName().c_str(), material)==0){
+					temp = this->materials[i];
 				}
 			}
 
-			Triangle* b = new Triangle(temp, vec1, vec2, vec3, vec4, vec5, vec6);
-			this->objects.push_back((Object)*b);
+			Triangle* t = new Triangle(temp, vec1, vec2, vec3, vec4, vec5, vec6);
+			this->objects.push_back(t);
 
 		}
 
@@ -289,28 +293,33 @@ Image* Scene::render(){
 
 			/*Create a ray*/
 			Ray* ray = new Ray();
+			//ray->d->display();
 			this->camera->getRay(x, y, ray);
+			//cout << "middle" << endl;
+			//ray->d->display();
 
 			/*For each object on the screen*/
-			Vec3d* min = new Vec3d(DBL_MAX,DBL_MAX,DBL_MAX);
+			double min = FLT_MAX;
 			Object* obj = NULL;
 			for(unsigned int i = 0; i < this->objects.size() ; i++){
 				/*Calculate the ray's intersection with the object*/
-				Vec3d* aux = this->objects[i].computeIntersection(ray);
-				if(aux==NULL){
-					continue;
-				}
-				/*Save the shortest intersection*/
-				if(aux->getDistance(*new Vec3d(0,0,0), *aux)  < min->getDistance(*new Vec3d(0,0,0), *min)){
-					min = aux;
-					obj = &this->objects[i];
+
+				float t = this->objects[i]->computeIntersection(ray);
+
+				if(t>0){
+					/*Save the shortest intersection*/
+					if(t<min){
+						min = t;
+						obj = this->objects[i];
+					}
 				}
 			}
 
 			if(obj!=NULL){
-				//TO-DO: compute color of pixel
+				image->imgSetPixel3fv(x,y,obj->getColor()->getColor());
 			}
 			else{
+				//cout << "No intersection" << endl;
 				if(this->texture == NULL){
 					image->imgSetPixel3fv(x,y,this->backGroundColor->getColor());
 				}

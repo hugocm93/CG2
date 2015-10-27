@@ -2,6 +2,7 @@
 #define VEC3_HPP
 
 #include <iostream>
+#include <math.h>
 
 template <class T> class Vec3
 {
@@ -178,7 +179,7 @@ template <class T> class Vec3
             return Vec3<T>(x - vector.x, y - vector.y, z - vector.z);
         }
 
-        // Overloaded subtract and asssign operator to subtract a Vec3 from another Vec3
+        // Overloaded subtract and assign operator to subtract a Vec3 from another Vec3
         void operator-=(const Vec3 &vector)
         {
             x -= vector.x;

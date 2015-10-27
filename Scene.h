@@ -29,9 +29,9 @@ private:
 	ColorRGB* ambientLightIntensity;
 	Texture* texture;
 	Camera* camera;
-	vector<Material> materials;
-	vector<Light> lights;
-	vector<Object> objects;
+	vector<Material*> materials;
+	vector<Light*> lights;
+	vector<Object*> objects;
 
 public:
 	/*Loads scene from a file*/

@@ -24,7 +24,8 @@ Triangle::~Triangle() {
 	// TODO Auto-generated destructor stub
 }
 
-Vec3d* Triangle::computeIntersection(Ray* ray){
+float Triangle::computeIntersection(Ray* ray){
+	//cout << "TriangleComputeIntersection"<< endl;
 	return NULL;
 }
 Vec3d* Triangle::computeNormal(Vec3d* position){
