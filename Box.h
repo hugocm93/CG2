@@ -20,7 +20,7 @@ public:
 
 	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
-
+	virtual ColorRGB* getColorP(void* scene, Ray* ray);
 	static float calcSquareArea(Vec3d* p1, Vec3d* p2, Vec3d* p3);
 };
 

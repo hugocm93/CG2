@@ -16,6 +16,7 @@ public:
 	ColorRGB(float r, float g, float b);
 	virtual ~ColorRGB();
 	float* getColor();
+	void increment(double r, double g, double b);
 };
 
 #endif /* COLORRGB_H_ */
