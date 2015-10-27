@@ -92,9 +92,7 @@ ColorRGB* Sphere::getColorP(void* scene, Ray* ray){
 		ColorRGB* l = &LL;
 		Vec3d L =  *s->lights[i]->getPosition() - *this->position;
 		L.normalise();
-
 		double nl = Vec3d::dotProduct(*normal, L);
-
 		aux->increment(l->getColor()[0]*kd->getColor()[0]*nl, l->getColor()[1]*kd->getColor()[1]*nl, l->getColor()[2]*kd->getColor()[2]*nl);
 	}
 	return aux;

@@ -4,6 +4,7 @@ CAMERA 120 50 40 0 30 0 0 1 0 90 1 100 400 400
 MATERIAL ball_glass 0.1 0.2 0.1   1 1 1  35  1  0.8  1.5  null
 MATERIAL table_glass 0.1 0.8 0.8   0 0 0  2000  0.6  0  1  null
 LIGHT 100 100 0 0.7 0.7 0.7
+LIGHT 60 150 -30 1 1 1
 SPHERE ball_glass    10        0 0 0
 SPHERE ball_glass    10      -17.3 0 -10
 SPHERE ball_glass    10      -17.3 0 10

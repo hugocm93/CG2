@@ -106,25 +106,26 @@ Vec3d*  Box::computeNormal(Vec3d* position){
 
 	//position->display();
 
+
+	if(abs(position->getY() - Ymin) < 1){
+		return new Vec3d(0,-1,0);
+	}
+	else if(abs(position->getY() - Ymax) < 1){
+		return new Vec3d(0,1,0);
+	}
+
+	if(abs(position->getZ() - Zmin) < 1){
+		return new Vec3d(0,0,-1);
+	}
+	else if(abs(position->getZ() - Zmax) < 1){
+		return new Vec3d(0,0,1);
+	}
+
 	if(abs(position->getX() - Xmin) <1){
 		return new Vec3d(-1,0,0);
 	}
 	else if(abs(position->getX() == Xmax) < 1){
 		return new Vec3d(1,0,0);
-	}
-
-	if(abs(position->getY() == Ymin) < 1){
-		return new Vec3d(0,-1,0);
-	}
-	else if(abs(position->getY() == Ymax) < 1){
-		return new Vec3d(0,1,0);
-	}
-
-	if(abs(position->getZ() == Zmin) < 1){
-		return new Vec3d(0,0,-1);
-	}
-	else if(abs(position->getZ() == Zmax) < 1){
-		return new Vec3d(0,0,1);
 	}
 
 }
@@ -136,6 +137,7 @@ ColorRGB* Box::getColorP(void* scene, Ray* ray){
 
 	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
 	Vec3d* normal = this->computeNormal(&P);
+	//normal->display();
 	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
 	for(unsigned int i = 0; i < s->lights.size() ; i++){
 		ColorRGB LL = *s->lights[i]->getIntensity();
