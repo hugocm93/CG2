@@ -11,6 +11,7 @@
 #include "Vec3.hpp"
 #include "Object.h"
 #include "Ray.h"
+#include "Scene.h"
 
 class Sphere: public Object {
 private:
@@ -21,7 +22,8 @@ public:
 	virtual ~Sphere();
 	virtual float computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
-	virtual ColorRGB* getColor();
+
+	virtual ColorRGB* getColorP(void* scene, Ray* ray);
 };
 
 #endif /* SPHERE_H_ */

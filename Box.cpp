@@ -7,6 +7,7 @@
 
 #include "Box.h"
 #include "Ray.h"
+#include "Scene.h"
 
 Box::Box(Material* mat, Vec3d* leftBottomCorner, Vec3d* rightTopCorner){
 	this->material = mat;
@@ -30,6 +31,8 @@ float Box::computeIntersection(Ray* ray){
 	Xmax = this->rightTopCorner->getX();
 	Ymax = this->rightTopCorner->getY();
 	Zmax = this->rightTopCorner->getZ();
+
+
 
 	float x = -1, y = -1, z = -1;
 
@@ -55,15 +58,15 @@ float Box::computeIntersection(Ray* ray){
 	}
 
 	if(x!=-1){
-			float t = (double)x/ray->d->getX();
-			if(t>0){
+		float t = (double)x/ray->d->getX();
+		if(t>0){
 
-				if((ray->d->getY()*t >= Ymin && ray->d->getY()*t <= Ymax)  &&  (ray->d->getZ()*t >= Zmin && ray->d->getZ()*t <= Zmax)){
-					//std::cout << t << std::endl;
-					return t;
-				}
+			if((ray->d->getY()*t >= Ymin && ray->d->getY()*t <= Ymax)  &&  (ray->d->getZ()*t >= Zmin && ray->d->getZ()*t <= Zmax)){
+				//std::cout << t << std::endl;
+				return t;
 			}
 		}
+	}
 
 	if(y!=-1){
 		float t = (double)y/ray->d->getY();
@@ -90,7 +93,4 @@ float Box::computeIntersection(Ray* ray){
 }
 Vec3d*  Box::computeNormal(Vec3d* position){
 	return NULL;
-}
-ColorRGB*  Box::getColor(){
-	return this->material->getKd();
 }

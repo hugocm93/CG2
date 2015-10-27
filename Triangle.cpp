@@ -31,7 +31,15 @@ float Triangle::computeIntersection(Ray* ray){
 Vec3d* Triangle::computeNormal(Vec3d* position){
 	return NULL;
 }
-ColorRGB* Triangle::getColor(){
-	return NULL;
+
+float Triangle::calcArea(Vec3d* p1, Vec3d* p2, Vec3d* p3){
+	Vec3d aux1 = *p2 - *p1;
+	Vec3d aux2 = *p3 - *p1;
+
+	//Vec3d newV = new Vec3d(aux1.getY()*aux2.getZ() - aux1.getZ()*aux2.getY(), -1*(aux1.getX()*aux2.getZ() - aux2.getX()*aux1.getZ()), aux1.getX()*aux2.getY() - aux1.getY()* aux2.getX());
+
+	Vec3d temp = Vec3d::crossProduct(aux1, aux2);
+	Vec3d* zero = new Vec3d(0,0,0);
+	return Vec3d::getDistance(*zero, temp)/2.0;
 }
 

@@ -24,7 +24,7 @@ using namespace std;
 
 class Scene {
 
-private:
+public:
 	ColorRGB* backGroundColor;
 	ColorRGB* ambientLightIntensity;
 	Texture* texture;

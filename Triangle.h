@@ -10,6 +10,7 @@
 
 #include "Object.h"
 #include "Ray.h"
+#include "Scene.h"
 
 class Triangle: public Object {
 private:
@@ -27,7 +28,7 @@ public:
 
 	virtual float computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
-	virtual ColorRGB* getColor();
+	static float calcArea(Vec3d* p1, Vec3d* p2, Vec3d* p3);
 };
 
 #endif /* TRIANGLE_H_ */

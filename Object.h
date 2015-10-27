@@ -30,7 +30,7 @@ public:
 	virtual Vec3d* computeNormal(Vec3d* position);
 
 	/*Calculates the color according to a point*/
-	virtual ColorRGB* getColor();
+	virtual ColorRGB* getColorP(void* scene, Ray* ray);
 };
 
 #endif /* OBJECT_H_ */

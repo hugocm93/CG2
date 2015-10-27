@@ -305,7 +305,6 @@ Image* Scene::render(){
 				/*Calculate the ray's intersection with the object*/
 
 				float t = this->objects[i]->computeIntersection(ray);
-
 				if(t>0){
 					/*Save the shortest intersection*/
 					if(t<min){
@@ -314,9 +313,9 @@ Image* Scene::render(){
 					}
 				}
 			}
-
+			//ray->d->display();
 			if(obj!=NULL){
-				image->imgSetPixel3fv(x,y,obj->getColor()->getColor());
+				image->imgSetPixel3fv(x,y,obj->getColorP(this, ray)->getColor());
 			}
 			else{
 				//cout << "No intersection" << endl;

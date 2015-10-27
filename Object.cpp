@@ -25,7 +25,7 @@ float Object::computeIntersection(Ray* ray){
 Vec3d* Object::computeNormal(Vec3d* position){
 	return NULL;
 }
-ColorRGB* Object::getColor(){
+ColorRGB* Object::getColorP(void* scene, Ray* ray){
 	return this->material->getKd();
 }
 
