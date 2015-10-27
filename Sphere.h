@@ -15,12 +15,12 @@
 
 class Sphere: public Object {
 private:
-	float radius;
+	double radius;
 	Vec3d* position;
 public:
-	Sphere(Material* mat, float radius, Vec3d* position);
+	Sphere(Material* mat, double radius, Vec3d* position);
 	virtual ~Sphere();
-	virtual float computeIntersection(Ray* ray);
+	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
 
 	virtual ColorRGB* getColorP(void* scene, Ray* ray);

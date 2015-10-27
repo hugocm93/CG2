@@ -24,7 +24,7 @@ Triangle::~Triangle() {
 	// TODO Auto-generated destructor stub
 }
 
-float Triangle::computeIntersection(Ray* ray){
+double Triangle::computeIntersection(Ray* ray){
 	//cout << "TriangleComputeIntersection"<< endl;
 	return NULL;
 }

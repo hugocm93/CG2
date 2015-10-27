@@ -15,7 +15,7 @@ class Ray {
 public:
 	Vec3d* o;
 	Vec3d* d;
-	float t;
+	double t;
 public:
 	Ray();
 	Ray(Vec3d* o, Vec3d* d, float t);

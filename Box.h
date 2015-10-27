@@ -18,7 +18,7 @@ public:
 	Box(Material* mat, Vec3d* leftBottomCorner, Vec3d* rightTopCorner);
 	virtual ~Box();
 
-	virtual float computeIntersection(Ray* ray);
+	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
 
 	static float calcSquareArea(Vec3d* p1, Vec3d* p2, Vec3d* p3);

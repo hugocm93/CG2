@@ -26,7 +26,7 @@ public:
 	Triangle(Material* mat, Vec3d* vertex1, Vec3d* vertex2, Vec3d* vertex3, Vec3d* textureVertex1, Vec3d* textureVertex2, Vec3d* textureVertex3);
 	virtual ~Triangle();
 
-	virtual float computeIntersection(Ray* ray);
+	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
 	static float calcArea(Vec3d* p1, Vec3d* p2, Vec3d* p3);
 };

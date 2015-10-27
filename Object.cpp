@@ -18,7 +18,7 @@ Object::~Object() {
 	// TODO Auto-generated destructor stub
 }
 
-float Object::computeIntersection(Ray* ray){
+double Object::computeIntersection(Ray* ray){
 	//cout << "ObjectComputeIntersection"<< endl;
 	return NULL;
 }

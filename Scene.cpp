@@ -293,6 +293,7 @@ Image* Scene::render(){
 
 			/*Create a ray*/
 			Ray* ray = new Ray();
+			ray->t = 0;
 			//ray->d->display();
 			this->camera->getRay(x, y, ray);
 			//cout << "middle" << endl;
@@ -301,6 +302,8 @@ Image* Scene::render(){
 			/*For each object on the screen*/
 			double min = FLT_MAX;
 			Object* obj = NULL;
+			Ray* spec;
+			spec = ray;
 			for(unsigned int i = 0; i < this->objects.size() ; i++){
 				/*Calculate the ray's intersection with the object*/
 
@@ -310,12 +313,14 @@ Image* Scene::render(){
 					if(t<min){
 						min = t;
 						obj = this->objects[i];
+
 					}
 				}
 			}
+			spec->t = min;
 			//ray->d->display();
 			if(obj!=NULL){
-				image->imgSetPixel3fv(x,y,obj->getColorP(this, ray)->getColor());
+				image->imgSetPixel3fv(x,y,obj->getColorP(this, spec)->getColor());
 			}
 			else{
 				//cout << "No intersection" << endl;
