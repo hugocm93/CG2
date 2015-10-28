@@ -78,23 +78,26 @@ Vec3d* Sphere::computeNormal(Vec3d* position){
 	return new Vec3d(normal.getX(), normal.getY(), normal.getZ());
 }
 
-ColorRGB* Sphere::getColorP(void* scene, Ray* ray){
-	Scene* s =  (Scene*)scene;
-	ColorRGB* ambient = s->ambientLightIntensity;
-	ColorRGB* kd = this->material->getKd();
-	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
-	Vec3d* normal = this->computeNormal(&P);
-	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
-
-	for(unsigned int i = 0; i < s->lights.size() ; i++){
-		ColorRGB LL = *s->lights[i]->getIntensity();
-		ColorRGB* l = &LL;
-		Vec3d L =  *s->lights[i]->getPosition() - *this->position;
-		L.normalise();
-		double nl = Vec3d::dotProduct(*normal, L);
-		aux->increment(l->getColor()[0]*kd->getColor()[0]*nl, l->getColor()[1]*kd->getColor()[1]*nl, l->getColor()[2]*kd->getColor()[2]*nl);
-	}
-
-	return aux;
+//ColorRGB* Sphere::getColorP(void* scene, Ray* ray){
+//	Scene* s =  (Scene*)scene;
+//	ColorRGB* ambient = s->ambientLightIntensity;
+//	ColorRGB* kd = this->material->getKd();
+//	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
+//	Vec3d* normal = this->computeNormal(&P);
+//	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
+//
+//	for(unsigned int i = 0; i < s->lights.size() ; i++){
+//		Vec3d specificPoint = this->getSpecificPoint(ray);
+//		ColorRGB* l = s->lights[i]->getIntensity();
+//		Vec3d L =  *s->lights[i]->getPosition() - specificPoint;
+//		L.normalise();
+//		double nl = Vec3d::dotProduct(*normal, L);
+//		aux->increment(l->getColor()[0]*kd->getColor()[0]*nl, l->getColor()[1]*kd->getColor()[1]*nl, l->getColor()[2]*kd->getColor()[2]*nl);
+//	}
+//
+//	return aux;
+//}
+Vec3d Sphere::getSpecificPoint(Ray* ray){
+	return *this->position;
 }
 

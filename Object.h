@@ -31,6 +31,8 @@ public:
 
 	/*Calculates the color according to a point*/
 	virtual ColorRGB* getColorP(void* scene, Ray* ray);
+
+	virtual Vec3d getSpecificPoint(Ray* ray);
 };
 
 #endif /* OBJECT_H_ */

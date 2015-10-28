@@ -43,3 +43,9 @@ float Triangle::calcArea(Vec3d* p1, Vec3d* p2, Vec3d* p3){
 	return Vec3d::getDistance(*zero, temp)/2.0;
 }
 
+Vec3d Triangle::getSpecificPoint(Ray* ray){
+	Vec3d aux;
+	return aux;
+}
+
+

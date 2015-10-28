@@ -106,45 +106,49 @@ Vec3d*  Box::computeNormal(Vec3d* position){
 
 	//position->display();
 
-
-	if(abs(position->getY() - Ymin) < 1){
+#define DELTA 1
+	if(abs(position->getY() - Ymin) < DELTA){
 		return new Vec3d(0,-1,0);
 	}
-	else if(abs(position->getY() - Ymax) < 1){
+	else if(abs(position->getY() - Ymax) < DELTA){
 		return new Vec3d(0,1,0);
 	}
 
-	if(abs(position->getZ() - Zmin) < 1){
+	if(abs(position->getZ() - Zmin) < DELTA){
 		return new Vec3d(0,0,-1);
 	}
-	else if(abs(position->getZ() - Zmax) < 1){
+	else if(abs(position->getZ() - Zmax) < DELTA){
 		return new Vec3d(0,0,1);
 	}
 
-	if(abs(position->getX() - Xmin) <1){
+	if(abs(position->getX() - Xmin) <DELTA){
 		return new Vec3d(-1,0,0);
 	}
-	else if(abs(position->getX() == Xmax) < 1){
+	else if(abs(position->getX() == Xmax) < DELTA){
 		return new Vec3d(1,0,0);
 	}
-
 }
 
-ColorRGB* Box::getColorP(void* scene, Ray* ray){
-	Scene* s =  (Scene*)scene;
-	ColorRGB* ambient = s->ambientLightIntensity;
-	ColorRGB* kd = this->material->getKd();
-	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
-	Vec3d* normal = this->computeNormal(&P);
+//ColorRGB* Box::getColorP(void* scene, Ray* ray){
+//	Scene* s =  (Scene*)scene;
+//	ColorRGB* ambient = s->ambientLightIntensity;
+//	ColorRGB* kd = this->material->getKd();
+//	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
+//	Vec3d* normal = this->computeNormal(&P);
+//	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
+//
+//	for(unsigned int i = 0; i < s->lights.size() ; i++){
+//		Vec3d specificPoint = this->getSpecificPoint(ray);
+//		ColorRGB* l = s->lights[i]->getIntensity();
+//		Vec3d L =  *s->lights[i]->getPosition() - specificPoint;
+//		L.normalise();
+//		double nl = Vec3d::dotProduct(*normal,  L);
+//		aux->increment(l->getColor()[0]*kd->getColor()[0]*nl, l->getColor()[1]*kd->getColor()[1]*nl, l->getColor()[2]*kd->getColor()[2]*nl);
+//	}
+//	return aux;
+//}
 
-	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
-	for(unsigned int i = 0; i < s->lights.size() ; i++){
-		ColorRGB LL = *s->lights[i]->getIntensity();
-		ColorRGB* l = &LL;
-		Vec3d L =  *s->lights[i]->getPosition() - P;
-		L.normalise();
-		double nl = Vec3d::dotProduct(*normal,  L);
-		aux->increment(l->getColor()[0]*kd->getColor()[0]*nl, l->getColor()[1]*kd->getColor()[1]*nl, l->getColor()[2]*kd->getColor()[2]*nl);
-	}
-	return aux;
+Vec3d Box::getSpecificPoint(Ray* ray){
+	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
+	return P;
 }

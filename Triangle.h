@@ -28,6 +28,7 @@ public:
 
 	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
+	virtual Vec3d getSpecificPoint(Ray* ray);
 	static float calcArea(Vec3d* p1, Vec3d* p2, Vec3d* p3);
 };
 

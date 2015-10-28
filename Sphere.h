@@ -22,8 +22,8 @@ public:
 	virtual ~Sphere();
 	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
-
-	virtual ColorRGB* getColorP(void* scene, Ray* ray);
+	virtual Vec3d getSpecificPoint(Ray* ray);
+	//virtual ColorRGB* getColorP(void* scene, Ray* ray);
 };
 
 #endif /* SPHERE_H_ */
