@@ -134,10 +134,9 @@ ColorRGB* Box::getColorP(void* scene, Ray* ray){
 	Scene* s =  (Scene*)scene;
 	ColorRGB* ambient = s->ambientLightIntensity;
 	ColorRGB* kd = this->material->getKd();
-
 	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
 	Vec3d* normal = this->computeNormal(&P);
-	//normal->display();
+
 	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
 	for(unsigned int i = 0; i < s->lights.size() ; i++){
 		ColorRGB LL = *s->lights[i]->getIntensity();

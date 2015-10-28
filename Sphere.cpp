@@ -80,13 +80,12 @@ Vec3d* Sphere::computeNormal(Vec3d* position){
 
 ColorRGB* Sphere::getColorP(void* scene, Ray* ray){
 	Scene* s =  (Scene*)scene;
-
 	ColorRGB* ambient = s->ambientLightIntensity;
 	ColorRGB* kd = this->material->getKd();
-
 	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
 	Vec3d* normal = this->computeNormal(&P);
 	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
+
 	for(unsigned int i = 0; i < s->lights.size() ; i++){
 		ColorRGB LL = *s->lights[i]->getIntensity();
 		ColorRGB* l = &LL;
@@ -95,7 +94,7 @@ ColorRGB* Sphere::getColorP(void* scene, Ray* ray){
 		double nl = Vec3d::dotProduct(*normal, L);
 		aux->increment(l->getColor()[0]*kd->getColor()[0]*nl, l->getColor()[1]*kd->getColor()[1]*nl, l->getColor()[2]*kd->getColor()[2]*nl);
 	}
-	return aux;
+
 	return aux;
 }
 
