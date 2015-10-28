@@ -181,8 +181,8 @@ ColorRGB* Box::getTexturePixel(Ray* ray, Material* mat){
 
 	u = abs(u);
 	v = abs(v);
-	cout << u << endl;
-	cout << v << endl;
+//	cout << u << endl;
+//	cout << v << endl;
 
 	float h = this->material->getTexture()->image->imgGetHeight();
 	float w = this->material->getTexture()->image->imgGetWidth();
