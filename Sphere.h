@@ -24,6 +24,7 @@ public:
 	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
 	virtual Vec3d getSpecificPoint(Ray* ray);
+	virtual ColorRGB* getTexturePixel(Ray* ray, Material* mat);
 
 };
 

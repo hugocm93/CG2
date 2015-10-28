@@ -33,6 +33,8 @@ public:
 	virtual ColorRGB* getColorP(void* scene, Ray* ray);
 
 	virtual Vec3d getSpecificPoint(Ray* ray);
+
+	virtual ColorRGB* getTexturePixel(Ray* ray, Material* mat);
 };
 
 #endif /* OBJECT_H_ */

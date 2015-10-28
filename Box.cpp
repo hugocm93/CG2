@@ -130,3 +130,65 @@ Vec3d Box::getSpecificPoint(Ray* ray){
 	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
 	return P;
 }
+
+ColorRGB* Box::getTexturePixel(Ray* ray, Material* mat){
+	Vec3d position2 = *ray->o + ((*ray->d)*(ray->t));
+	Vec3d* position = &position2;
+
+	float u;
+	float v;
+
+	double Xmin, Xmax;
+	double Ymin, Ymax;
+	double Zmin, Zmax;
+
+	Xmin = this->leftBottomCorner->getX();
+	Ymin = this->leftBottomCorner->getY();
+	Zmin = this->leftBottomCorner->getZ();
+
+	Xmax = this->rightTopCorner->getX();
+	Ymax = this->rightTopCorner->getY();
+	Zmax = this->rightTopCorner->getZ();
+
+
+#define DELTA 1
+	if(abs(position->getY() - Ymin) < DELTA){
+		u = position->getX() - Xmin;
+		v = position->getZ() - Zmin ;
+	}
+	else if(abs(position->getY() - Ymax) < DELTA){
+		u = position->getX() - Xmax;
+		v = position->getZ() - Zmax;
+	}
+
+	if(abs(position->getZ() - Zmin) < DELTA){
+		u = position->getX() - Xmin;
+		v = position->getY() - Ymin;
+	}
+	else if(abs(position->getZ() - Zmax) < DELTA){
+		u = position->getX() - Xmax;
+		v = position->getY() - Ymax;
+	}
+
+	if(abs(position->getX() - Xmin) <DELTA){
+		u = position->getY() - Ymin;
+		v = position->getZ() - Zmin;
+	}
+	else if(abs(position->getX() == Xmax) < DELTA){
+		u = position->getX() - Xmax;
+		v = position->getY() - Ymax;
+	}
+
+	u = abs(u);
+	v = abs(v);
+	cout << u << endl;
+	cout << v << endl;
+
+	float h = this->material->getTexture()->image->imgGetHeight();
+	float w = this->material->getTexture()->image->imgGetWidth();
+
+	float vec[3];
+	this->material->getTexture()->image->imgGetPixel3fv((int)(u)%(int)w, (int)(v)%(int)h, vec);
+
+	return new ColorRGB(vec[0],vec[1],vec[2]);
+}

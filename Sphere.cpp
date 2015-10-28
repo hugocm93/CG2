@@ -65,4 +65,20 @@ Vec3d* Sphere::computeNormal(Vec3d* position){
 Vec3d Sphere::getSpecificPoint(Ray* ray){
 	return *this->position;
 }
+ColorRGB* Sphere::getTexturePixel(Ray* ray, Material* mat){
+	Vec3d aux = *ray->o + ((*ray->d)*(ray->t));
+	float theta = atan(aux.getY()/(aux.getX()+1));
+	float phi = sqrt(pow(aux.getX(),2) + pow(aux.getY(),2)/aux.getZ());
+
+	float u = 0.5*(1 + phi/3.14159);
+	float v = theta/3.14159;
+
+	float h = this->material->getTexture()->image->imgGetHeight();
+	float w = this->material->getTexture()->image->imgGetWidth();
+
+	float vec[3];
+	this->material->getTexture()->image->imgGetPixel3fv((int)(u*w)%(int)w, (int)(v*h)%(int)h, vec);
+
+	return new ColorRGB(vec[0],vec[1],vec[2]);
+}
 
