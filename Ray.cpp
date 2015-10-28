@@ -19,7 +19,6 @@ Ray::Ray(Vec3d* o, Vec3d* d, float t){
 	this->t = t;
 
 }
-
 Ray::~Ray() {
 	// TODO Auto-generated destructor stub
 }

@@ -20,10 +20,11 @@ private:
 public:
 	Sphere(Material* mat, double radius, Vec3d* position);
 	virtual ~Sphere();
+
 	virtual double computeIntersection(Ray* ray);
 	virtual Vec3d* computeNormal(Vec3d* position);
 	virtual Vec3d getSpecificPoint(Ray* ray);
-	//virtual ColorRGB* getColorP(void* scene, Ray* ray);
+
 };
 
 #endif /* SPHERE_H_ */

@@ -155,8 +155,6 @@ Scene::Scene(char* fileName){
 
 			Material* temp = NULL;
 			for(unsigned int i = 0; i < this->materials.size() ; i++){
-				cout << '@'<<this->materials[i]->getName().c_str() << '@'<< endl;
-				cout << '@'<<material << '@'<< endl;
 				if(strcmp(this->materials[i]->getName().c_str(), material)==0){
 					temp = this->materials[i];
 				}
@@ -294,10 +292,7 @@ Image* Scene::render(){
 			/*Create a ray*/
 			Ray* ray = new Ray();
 			ray->t = 0;
-			//ray->d->display();
 			this->camera->getRay(x, y, ray);
-			//cout << "middle" << endl;
-			//ray->d->display();
 
 			/*For each object on the screen*/
 			double min = FLT_MAX;
@@ -318,12 +313,11 @@ Image* Scene::render(){
 				}
 			}
 			spec->t = min;
-			//ray->d->display();
+
 			if(obj!=NULL){
 				image->imgSetPixel3fv(x,y,obj->getColorP(this, spec)->getColor());
 			}
 			else{
-				//cout << "No intersection" << endl;
 				if(this->texture == NULL){
 					image->imgSetPixel3fv(x,y,this->backGroundColor->getColor());
 				}

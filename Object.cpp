@@ -16,12 +16,11 @@ Object::Object() {
 }
 
 Object::~Object() {
-	// TODO Auto-generated destructor stub
+
 }
 
 double Object::computeIntersection(Ray* ray){
-	//cout << "ObjectComputeIntersection"<< endl;
-	return NULL;
+	return 0;
 }
 Vec3d* Object::computeNormal(Vec3d* position){
 	return NULL;

@@ -34,15 +34,10 @@ Camera::Camera(Vec3d *eyePosition, Vec3d *centerPosition, Vec3d *upVector, float
 	Vec3d temp3 = Vec3d::crossProduct(*Ze, *Xe);
 	Ye = new Vec3d(temp3.getX(),temp3.getY(),temp3.getZ());
 	Ye->normalise();
-
-//	Xe->display();
-//	Ye->display();
-//	Ze->display();
-
 }
 
 Camera::~Camera() {
-	// TODO Auto-generated destructor stub
+
 }
 
 void Camera::getRay(int x, int y, Ray* ray){
@@ -53,9 +48,5 @@ void Camera::getRay(int x, int y, Ray* ray){
 	Vec3d temp3 = (*Xe)*(base*((double)x/(double)imageWidth - 0.5));
 	Vec3d temp4 = temp1 + temp2 + temp3;
 	ray->d  = new Vec3d(temp4.getX(),temp4.getY(),temp4.getZ());
-
-//	ray->o->display();
-	//std::cout << "Display "<< std::endl;
-	//temp4.display();
 }
 

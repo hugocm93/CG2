@@ -17,7 +17,7 @@ Box::Box(Material* mat, Vec3d* leftBottomCorner, Vec3d* rightTopCorner){
 }
 
 Box::~Box() {
-	// TODO Auto-generated destructor stub
+
 }
 
 double Box::computeIntersection(Ray* ray){
@@ -61,7 +61,6 @@ double Box::computeIntersection(Ray* ray){
 		if(t>0){
 
 			if((ray->o->getY() + ray->d->getY()*t >= Ymin && ray->o->getY() + ray->d->getY()*t <= Ymax)  &&  (ray->o->getZ() + ray->d->getZ()*t >= Zmin && ray->o->getZ() + ray->d->getZ()*t <= Zmax)){
-				//std::cout << t << std::endl;
 				return t;
 			}
 		}
@@ -71,7 +70,6 @@ double Box::computeIntersection(Ray* ray){
 		double t = (((double)y - ray->o->getY())/ray->d->getY());
 		if(t>0){
 			if((ray->o->getX() + ray->d->getX()*t >= Xmin && ray->o->getX() + ray->d->getX()*t <= Xmax)   &&  (ray->o->getZ() + ray->d->getZ()*t >= Zmin && ray->o->getZ() + ray->d->getZ()*t <= Zmax)){
-				//std::cout << t << std::endl;
 				return t;
 			}
 		}
@@ -81,7 +79,6 @@ double Box::computeIntersection(Ray* ray){
 		double t =  (((double)z - ray->o->getZ())/ray->d->getZ());
 		if(t>0){
 			if((ray->o->getX() + ray->d->getX()*t >= Xmin && ray->o->getX() + ray->d->getX()*t <= Xmax)  &&  (ray->o->getY() + ray->d->getY()*t >= Ymin && ray->o->getY() + ray->d->getY()*t <= Ymax)){
-				//std::cout << t << std::endl;
 				return t;
 			}
 		}
@@ -104,7 +101,6 @@ Vec3d*  Box::computeNormal(Vec3d* position){
 	Ymax = this->rightTopCorner->getY();
 	Zmax = this->rightTopCorner->getZ();
 
-	//position->display();
 
 #define DELTA 1
 	if(abs(position->getY() - Ymin) < DELTA){
@@ -127,26 +123,8 @@ Vec3d*  Box::computeNormal(Vec3d* position){
 	else if(abs(position->getX() == Xmax) < DELTA){
 		return new Vec3d(1,0,0);
 	}
+	else return new Vec3d(0,0,0);
 }
-
-//ColorRGB* Box::getColorP(void* scene, Ray* ray){
-//	Scene* s =  (Scene*)scene;
-//	ColorRGB* ambient = s->ambientLightIntensity;
-//	ColorRGB* kd = this->material->getKd();
-//	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
-//	Vec3d* normal = this->computeNormal(&P);
-//	ColorRGB* aux = new ColorRGB(ambient->getColor()[0]*kd->getColor()[0], ambient->getColor()[1]*kd->getColor()[1], ambient->getColor()[2]*kd->getColor()[2]);
-//
-//	for(unsigned int i = 0; i < s->lights.size() ; i++){
-//		Vec3d specificPoint = this->getSpecificPoint(ray);
-//		ColorRGB* l = s->lights[i]->getIntensity();
-//		Vec3d L =  *s->lights[i]->getPosition() - specificPoint;
-//		L.normalise();
-//		double nl = Vec3d::dotProduct(*normal,  L);
-//		aux->increment(l->getColor()[0]*kd->getColor()[0]*nl, l->getColor()[1]*kd->getColor()[1]*nl, l->getColor()[2]*kd->getColor()[2]*nl);
-//	}
-//	return aux;
-//}
 
 Vec3d Box::getSpecificPoint(Ray* ray){
 	Vec3d P = *ray->o + ((*ray->d)*(ray->t));
