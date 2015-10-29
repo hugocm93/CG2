@@ -67,7 +67,7 @@ Vec3d Sphere::getSpecificPoint(Ray* ray){
 }
 ColorRGB* Sphere::getTexturePixel(Ray* ray, Material* mat){
 	Vec3d aux = *ray->o + ((*ray->d)*(ray->t));
-	float theta = atan(aux.getY()/(aux.getX()+1));
+	float theta = atan(aux.getY()/(aux.getX()+0.001));
 	float phi = sqrt(pow(aux.getX(),2) + pow(aux.getY(),2)/aux.getZ());
 
 	float u = 0.5*(1 + phi/3.14159);

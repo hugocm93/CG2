@@ -8,6 +8,7 @@
 #include "Object.h"
 #include "Ray.h"
 #include "Scene.h"
+#include <cmath>
 
 
 Object::Object() {
@@ -49,6 +50,7 @@ ColorRGB* Object::getColorP(void* scene, Ray* ray){
 		double rl = Vec3d::dotProduct(r, L);
 
 		double nl = Vec3d::dotProduct(*normal, L);
+
 
 		if(this->material->getTexture()==NULL){
 

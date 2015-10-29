@@ -102,7 +102,7 @@ Vec3d*  Box::computeNormal(Vec3d* position){
 	Zmax = this->rightTopCorner->getZ();
 
 
-#define DELTA 1
+#define DELTA 0.0001
 	if(abs(position->getY() - Ymin) < DELTA){
 		return new Vec3d(0,-1,0);
 	}
@@ -181,8 +181,7 @@ ColorRGB* Box::getTexturePixel(Ray* ray, Material* mat){
 
 	u = abs(u);
 	v = abs(v);
-//	cout << u << endl;
-//	cout << v << endl;
+
 
 	float h = this->material->getTexture()->image->imgGetHeight();
 	float w = this->material->getTexture()->image->imgGetWidth();
